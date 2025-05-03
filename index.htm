@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced CRRT Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with Controls -->
+        <header class="app-header">
+            <h1>CRRT Management System</h1>
+            <div class="controls">
+                <button id="themeToggle" aria-label="Toggle theme">🌓</button>
+                <select id="languageSelect" aria-label="Select language">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="content-grid">
+            <!-- Patient Parameters -->
+            <section class="patient-section card">
+                <h2>Patient Parameters</h2>
+                <div class="input-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" min="20" max="250" value="70">
+                </div>
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" min="18" max="120" value="50">
+                </div>
+                <div class="input-group">
+                    <label for="apache">APACHE II Score</label>
+                    <input type="number" id="apache" min="0" max="71" value="15">
+                </div>
+            </section>
+
+            <!-- CRRT Modality Selection -->
+            <section class="modality-section card">
+                <h2>CRRT Modality</h2>
+                <div class="modality-buttons">
+                    <button class="modality-btn active" data-modality="CVVH">CVVH</button>
+                    <button class="modality-btn" data-modality="CVVHD">CVVHD</button>
+                    <button class="modality-btn" data-modality="CVVHDF">CVVHDF</button>
+                </div>
+                <div class="animation-container" id="circuitAnimation">
+                    <!-- D3.js will render here -->
+                </div>
+            </section>
+
+            <!-- Fluid Management -->
+            <section class="fluid-section card">
+                <h2>Fluid Management</h2>
+                
+                <!-- Prefilter Section -->
+                <div class="fluid-control">
+                    <h3>Prefilter Replacement</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="prefilterRate">Rate (mL/hr)</label>
+                            <input type="range" id="prefilterRate" min="0" max="5000" value="1000">
+                            <span id="prefilterRateValue">1000</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="prefilterType">Solution</label>
+                            <select id="prefilterType">
+                                <option value="bicarb">Bicarbonate (32 mEq/L)</option>
+                                <option value="citrate">Citrate (ACD-A)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dialysate Section -->
+                <div class="fluid-control">
+                    <h3>Dialysate</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="dialysateRate">Rate (mL/hr)</label>
+                            <input type="range" id="dialysateRate" min="0" max="5000" value="2000">
+                            <span id="dialysateRateValue">2000</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="dialysateType">Composition</label>
+                            <select id="dialysateType">
+                                <option value="standard">Standard (K⁺ 4 mEq/L)</option>
+                                <option value="lowK">Low Potassium (K⁺ 2 mEq/L)</option>
+                                <option value="highBicarb">High Bicarbonate (40 mEq/L)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post-filter Section -->
+                <div class="fluid-control">
+                    <h3>Post-filter Replacement</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="postfilterRate">Rate (mL/hr)</label>
+                            <input type="range" id="postfilterRate" min="0" max="3000" value="0">
+                            <span id="postfilterRateValue">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Panel -->
+            <section class="results-section card">
+                <h2>Treatment Parameters</h2>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <h3>Effluent Dose</h3>
+                        <div class="result-value" id="effluentDose">25.0</div>
+                        <div class="result-unit">mL/kg/hr</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Anticoagulation</h3>
+                        <div class="result-value" id="anticoagStatus">Citrate</div>
+                        <div class="result-unit" id="anticoagDose">2.5 mmol/L</div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Filter Life</h3>
+                        <div class="result-value" id="filterLife">72</div>
+                        <div class="result-unit">hours</div>
+                    </div>
+                </div>
+                <div class="alerts" id="safetyAlerts">
+                    <!-- Safety alerts appear here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <button id="exportBtn">Export Treatment Plan</button>
+            <button id="helpBtn">Show Help</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
