@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NephroGuide CRRT Decision Support</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --secondary: #4299e1;
+            --danger: #e53e3e;
+            --warning: #dd6b20;
+            --success: #38a169;
+            --background: #f7fafc;
+            --text: #1a202c;
+            --card-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3182ce;
+            --secondary: #63b3ed;
+            --danger: #fc8181;
+            --warning: #f6ad55;
+            --success: #68d391;
+            --background: #1a202c;
+            --text: #f7fafc;
+            --card-bg: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "patient circuit fluids"
+                "results results results";
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Circuit visualization styles */
+        .circuit-section {
+            padding-top: 20px;
+        }
+        
+        .circuit-animation {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .modality-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .modality-btn {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .modality-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .dialysate-label, .pre-replacement-label, .post-replacement-label, .effluent-label {
+            font-weight: bold;
+        }
+
+        /* Action button styles */
+        .btn-action {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-check-now {
+            background-color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .btn-check-now:hover {
+            background-color: #1a4a73;
+        }
+
+        /* Waveform Visualization Styles */
+        .waveform-visualization {
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .waveform-tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .waveform-tab {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 8px 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .waveform-tab.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .waveform-display {
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f8fafc;
+        }
+
+        canvas#waveform-canvas {
+            width: 100%;
+            height: 150px;
+            display: block;
+        }
+
+        /* Animation speed controls */
+        .animation-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .animation-speed-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Ventilator Parameters Styles */
+        .vent-params-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .vent-param-item {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .param-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        
+        .param-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .param-unit {
+            font-size: 14px;
+            font-weight: normal;
+            color: #64748b;
+        }
+        
+        .param-status {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .param-status.good {
+            color: var(--success);
+        }
+        
+        .param-status.warning {
+            color: var(--warning);
+        }
+        
+        .param-status.danger {
+            color: var(--danger);
+        }
+        
+        .param-status i {
+            font-size: 10px;
+        }
+
+        /* Detailed styling for all components... */
+        /* (Would include styles for inputs, buttons, circuit visualization, etc.) */
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header" style="grid-area: header;">
+            <div class="header-content">
+                <h1><i class="fas fa-heartbeat"></i> NephroGuide CRRT Decision Support</h1>
+                <div class="app-controls">
+                    <button id="check-now-btn" class="btn-action btn-check-now">
+                        <i class="fas fa-play-circle"></i> Check Now
+                    </button>
+                    <button id="theme-toggle"><i class="fas fa-moon"></i> Theme</button>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- Patient Data Section -->
+        <section class="patient-section" style="grid-area: patient;">
+            <div class="card">
+                <h2><i class="fas fa-user-circle"></i> Patient Data</h2>
+                <div class="input-group">
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" min="20" max="300" step="0.1" value="70">
+                </div>
+                <div class="input-group">
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" min="100" max="250" value="170">
+                </div>
+                <div class="input-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" min="18" max="120" value="50">
+                </div>
+                <div class="input-group">
+                    <label for="apache">APACHE II Score:</label>
+                    <input type="number" id="apache" min="0" max="71" value="15">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-flask"></i> Current Labs</h2>
+                <div class="lab-grid">
+                    <div class="lab-item">
+                        <label>K⁺ (mEq/L):</label>
+                        <input type="number" class="lab-value" value="4.2" step="0.1">
+                    </div>
+                    <div class="lab-item">
+                        <label>HCO₃⁻ (mEq/L):</label>
+                        <input type="number" class="lab-value" value="22" step="1">
+                    </div>
+                    <div class="lab-item">
+                        <label>Creatinine (mg/dL):</label>
+                        <input type="number" class="lab-value" value="2.5" step="0.1">
+                    </div>
+                    <div class="lab-item">
+                        <label>pH:</label>
+                        <input type="number" class="lab-value" value="7.32" step="0.01">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Circuit Visualization Section -->
+        <section class="circuit-section" style="grid-area: circuit;">
+            <div class="card">
+                <div class="circuit-header">
+                    <h2><i class="fas fa-project-diagram"></i> CRRT Circuit</h2>
+                    <div class="modality-tabs">
+                        <button class="modality-btn active" data-modality="CVVH">CVVH</button>
+                        <button class="modality-btn" data-modality="CVVHD">CVVHD</button>
+                        <button class="modality-btn" data-modality="CVVHDF">CVVHDF</button>
+                        <button class="modality-btn" data-modality="SCUF">SCUF</button>
+                        <button class="modality-btn" data-modality="TPE">TPE</button>
+                    </div>
+                </div>
+                <div class="circuit-animation" id="circuit-animation">
+                    <!-- Dynamic SVG will be inserted here -->
+                    <svg width="100%" height="450" viewBox="0 0 800 450" id="circuit-svg">
+                        <!-- Circuit Container with margin -->
+                        <g transform="translate(0, 50)">
+                            <!-- Blood path -->
+                            <path class="blood-path" d="M50,200 L200,200" stroke-width="8" stroke="#e53e3e" fill="none" />
+                            <!-- Filter -->
+                            <rect x="200" y="150" width="100" height="100" fill="#e2e8f0" stroke="#4a5568" stroke-width="2" />
+                            <!-- Filter Label -->
+                            <text x="250" y="205" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="bold">Filter</text>
+                            <!-- Return path -->
+                            <path class="return-path" d="M300,200 L450,200" stroke-width="8" stroke="#38a169" fill="none" />
+                            <!-- Access and Return Labels -->
+                            <text x="50" y="180" text-anchor="start" fill="var(--text)" font-size="14" font-weight="bold">Access</text>
+                            <text x="450" y="180" text-anchor="end" fill="var(--text)" font-size="14" font-weight="bold">Return</text>
+                            <!-- Dialysate path (shown in CVVHD/CVVHDF) -->
+                            <path class="dialysate-path" d="M250,80 L250,150 M250,250 L250,320" stroke-width="8" stroke="#4299e1" fill="none" style="display: none;" />
+                            <text class="dialysate-label" x="250" y="60" text-anchor="middle" fill="#4299e1" font-size="16" font-weight="bold" style="display: none;">Dialysate</text>
+                            <!-- Pre-replacement fluid path -->
+                            <path class="pre-replacement-path" d="M150,120 L150,200" stroke-width="6" stroke="#d69e2e" fill="none" />
+                            <text class="pre-replacement-label" x="150" y="100" text-anchor="middle" fill="#d69e2e" font-size="14">Pre-filter</text>
+                            <!-- Post-replacement fluid path -->
+                            <path class="post-replacement-path" d="M350,120 L350,200" stroke-width="6" stroke="#dd6b20" fill="none" />
+                            <text class="post-replacement-label" x="350" y="100" text-anchor="middle" fill="#dd6b20" font-size="14">Post-filter</text>
+                            <!-- Effluent path -->
+                            <path class="effluent-path" d="M250,250 L250,350" stroke-width="6" stroke="#718096" fill="none" />
+                            <text class="effluent-label" x="250" y="370" text-anchor="middle" fill="#718096" font-size="14">Effluent</text>
+                            
+                            <!-- Animated Blood Flow -->
+                            <g class="blood-animation">
+                                <circle class="blood-particle" r="4" fill="#e53e3e">
+                                    <animate attributeName="cx" from="50" to="450" dur="5s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="blood-particle" r="4" fill="#e53e3e">
+                                    <animate attributeName="cx" from="50" to="450" dur="5s" begin="1s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="1s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="blood-particle" r="4" fill="#e53e3e">
+                                    <animate attributeName="cx" from="50" to="450" dur="5s" begin="2s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="2s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="blood-particle" r="4" fill="#e53e3e">
+                                    <animate attributeName="cx" from="50" to="450" dur="5s" begin="3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="3s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="blood-particle" r="4" fill="#e53e3e">
+                                    <animate attributeName="cx" from="50" to="450" dur="5s" begin="4s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="4s" repeatCount="indefinite" />
+                                </circle>
+                            </g>
+                            
+                            <!-- Animated Pre-Replacement Flow -->
+                            <g class="pre-replacement-animation">
+                                <circle class="pre-particle" r="3" fill="#d69e2e">
+                                    <animate attributeName="cy" from="120" to="200" dur="3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="pre-particle" r="3" fill="#d69e2e" cx="150">
+                                    <animate attributeName="cy" from="120" to="200" dur="3s" begin="1s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" begin="1s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="pre-particle" r="3" fill="#d69e2e" cx="150">
+                                    <animate attributeName="cy" from="120" to="200" dur="3s" begin="2s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" begin="2s" repeatCount="indefinite" />
+                                </circle>
+                            </g>
+                            
+                            <!-- Animated Post-Replacement Flow -->
+                            <g class="post-replacement-animation">
+                                <circle class="post-particle" r="3" fill="#dd6b20" cx="350">
+                                    <animate attributeName="cy" from="120" to="200" dur="4s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="post-particle" r="3" fill="#dd6b20" cx="350">
+                                    <animate attributeName="cy" from="120" to="200" dur="4s" begin="2s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" begin="2s" repeatCount="indefinite" />
+                                </circle>
+                            </g>
+                            
+                            <!-- Animated Effluent Flow -->
+                            <g class="effluent-animation">
+                                <circle class="effluent-particle" r="3" fill="#718096" cx="250">
+                                    <animate attributeName="cy" from="250" to="350" dur="4s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="effluent-particle" r="3" fill="#718096" cx="250">
+                                    <animate attributeName="cy" from="250" to="350" dur="4s" begin="1.3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" begin="1.3s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="effluent-particle" r="3" fill="#718096" cx="250">
+                                    <animate attributeName="cy" from="250" to="350" dur="4s" begin="2.7s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="4s" begin="2.7s" repeatCount="indefinite" />
+                                </circle>
+                            </g>
+                            
+                            <!-- Animated Dialysate Flow -->
+                            <g class="dialysate-animation" style="display: none;">
+                                <circle class="dialysate-particle" r="3" fill="#4299e1" cx="250">
+                                    <animate attributeName="cy" from="100" to="150" dur="3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" repeatCount="indefinite" />
+                                </circle>
+                                <circle class="dialysate-particle" r="3" fill="#4299e1" cx="250">
+                                    <animate attributeName="cy" from="250" to="300" dur="3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" repeatCount="indefinite" />
+                                </circle>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                
+                <!-- Waveform Visualization Section -->
+                <div class="waveform-visualization">
+                    <div class="waveform-tabs">
+                        <button class="waveform-tab active" data-wave="pressure">Filter Pressure</button>
+                        <button class="waveform-tab" data-wave="flow">Blood Flow</button>
+                    </div>
+                    <div class="waveform-display">
+                        <canvas id="waveform-canvas" width="500" height="150"></canvas>
+                    </div>
+                </div>
+                <div class="mode-description" id="mode-description">
+                    <h3>Continuous Veno-Venous Hemofiltration (CVVH)</h3>
+                    <p>Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.</p>
+                </div>
+                <div class="circuit-controls">
+                    <div class="control-group">
+                        <label for="blood-flow">Blood Flow (mL/min):</label>
+                        <input type="range" id="blood-flow" min="50" max="300" value="150">
+                        <span id="blood-flow-value">150</span>
+                    </div>
+                    <div class="pressure-readings">
+                        <div class="pressure">
+                            <span>Access: </span>
+                            <span class="pressure-value" id="access-pressure">-50</span> mmHg
+                        </div>
+                        <div class="pressure">
+                            <span>Pre-filter: </span>
+                            <span class="pressure-value" id="pre-filter-pressure">180</span> mmHg
+                        </div>
+                        <div class="pressure">
+                            <span>Return: </span>
+                            <span class="pressure-value" id="return-pressure">80</span> mmHg
+                        </div>
+                        <div class="pressure">
+                            <span>TMP: </span>
+                            <span class="pressure-value" id="tmp-pressure">120</span> mmHg
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fluid Management Section -->
+        <section class="fluid-section" style="grid-area: fluids;">
+            <div class="card">
+                <h2><i class="fas fa-tint"></i> Fluid Management</h2>
+                
+                <div class="fluid-control-group" id="prefilter-controls">
+                    <h3><i class="fas fa-inbox"></i> Pre-filter Replacement</h3>
+                    <div class="fluid-control">
+                        <label for="prefilter-rate">Rate (mL/hr):</label>
+                        <input type="number" id="prefilter-rate" min="0" max="5000" step="50" value="1000">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="prefilter-solution">Solution:</label>
+                        <select id="prefilter-solution">
+                            <option value="bicarbonate">Bicarbonate (Na 140, HCO₃ 32)</option>
+                            <option value="citrate">Citrate (ACD-A)</option>
+                            <option value="custom">Custom Composition</option>
+                        </select>
+                    </div>
+                    <div class="fluid-custom" id="prefilter-custom" style="display: none;">
+                        <div class="custom-electrolytes">
+                            <div class="electrolyte-input">
+                                <label>Na⁺ (mEq/L):</label>
+                                <input type="number" id="pre-na" value="140" min="130" max="150">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>K⁺ (mEq/L):</label>
+                                <input type="number" id="pre-k" value="4" min="0" max="8" step="0.1">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>HCO₃⁻ (mEq/L):</label>
+                                <input type="number" id="pre-hco3" value="32" min="0" max="40">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluid-control-group" id="dialysate-controls">
+                    <h3><i class="fas fa-filter"></i> Dialysate</h3>
+                    <div class="fluid-control">
+                        <label for="dialysate-rate">Rate (mL/hr):</label>
+                        <input type="number" id="dialysate-rate" min="0" max="5000" step="50" value="2000">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="dialysate-solution">Composition:</label>
+                        <select id="dialysate-solution">
+                            <option value="standard">Standard (K 4.0)</option>
+                            <option value="lowK">Low Potassium (K 2.0)</option>
+                            <option value="highBicarb">High Bicarbonate (HCO₃ 40)</option>
+                            <option value="custom">Custom Composition</option>
+                        </select>
+                    </div>
+                    <div class="fluid-custom" id="dialysate-custom" style="display: none;">
+                        <div class="custom-electrolytes">
+                            <div class="electrolyte-input">
+                                <label>Na⁺ (mEq/L):</label>
+                                <input type="number" id="dial-na" value="140" min="130" max="150">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>K⁺ (mEq/L):</label>
+                                <input type="number" id="dial-k" value="4" min="0" max="8" step="0.1">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>Ca²⁺ (mEq/L):</label>
+                                <input type="number" id="dial-ca" value="2.5" min="0" max="5" step="0.1">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>Mg²⁺ (mEq/L):</label>
+                                <input type="number" id="dial-mg" value="1.5" min="0" max="4" step="0.1">
+                            </div>
+                            <div class="electrolyte-input">
+                                <label>HCO₃⁻ (mEq/L):</label>
+                                <input type="number" id="dial-hco3" value="32" min="0" max="40">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluid-control-group" id="postfilter-controls">
+                    <h3><i class="fas fa-outdent"></i> Post-filter Replacement</h3>
+                    <div class="fluid-control">
+                        <label for="postfilter-rate">Rate (mL/hr):</label>
+                        <input type="number" id="postfilter-rate" min="0" max="3000" step="50" value="0">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="postfilter-solution">Solution:</label>
+                        <select id="postfilter-solution">
+                            <option value="bicarbonate">Bicarbonate (Na 140, HCO₃ 32)</option>
+                            <option value="balanced">Balanced (K 4.0, Ca 2.5)</option>
+                            <option value="custom">Custom Composition</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="fluid-control-group">
+                    <h3><i class="fas fa-calculator"></i> Fluid Removal</h3>
+                    <div class="fluid-control">
+                        <label for="net-uf-rate">Net UF Rate (mL/hr):</label>
+                        <input type="number" id="net-uf-rate" min="0" max="1000" step="10" value="100">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="target-balance">24hr Target Balance (mL):</label>
+                        <input type="number" id="target-balance" min="-10000" max="5000" step="100" value="-2400">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-syringe"></i> Anticoagulation</h2>
+                <div class="anticoag-controls">
+                    <div class="anticoag-selector">
+                        <label for="anticoag-method">Method:</label>
+                        <select id="anticoag-method">
+                            <option value="citrate">Regional Citrate</option>
+                            <option value="heparin">Heparin</option>
+                            <option value="argatroban">Argatroban</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div id="citrate-controls" class="anticoag-params">
+                        <div class="param-group">
+                            <label for="citrate-rate">ACD-A Rate (mL/hr):</label>
+                            <input type="number" id="citrate-rate" min="0" max="500" value="150">
+                        </div>
+                        <div class="param-group">
+                            <label for="calcium-rate">Calcium Rate (mmol/hr):</label>
+                            <input type="number" id="calcium-rate" min="0" max="10" step="0.1" value="2.5">
+                        </div>
+                        <div class="param-group">
+                            <label for="citrate-dose">Citrate Dose (mmol/L blood):</label>
+                            <span id="citrate-dose-value">3.0</span>
+                        </div>
+                    </div>
+                    <div id="heparin-controls" class="anticoag-params" style="display: none;">
+                        <div class="param-group">
+                            <label for="heparin-bolus">Bolus (units):</label>
+                            <input type="number" id="heparin-bolus" min="0" max="10000" step="500" value="1000">
+                        </div>
+                        <div class="param-group">
+                            <label for="heparin-rate">Rate (units/hr):</label>
+                            <input type="number" id="heparin-rate" min="0" max="5000" step="100" value="1000">
+                        </div>
+                        <div class="param-group">
+                            <label for="heparin-target">Target aPTT (sec):</label>
+                            <input type="number" id="heparin-target" min="30" max="120" step="5" value="60">
+                        </div>
+                    </div>
+                    <div id="argatroban-controls" class="anticoag-params" style="display: none;">
+                        <div class="param-group">
+                            <label for="argatroban-rate">Rate (mcg/kg/min):</label>
+                            <input type="number" id="argatroban-rate" min="0" max="10" step="0.1" value="0.5">
+                        </div>
+                        <div class="param-group">
+                            <label for="argatroban-target">Target aPTT (sec):</label>
+                            <input type="number" id="argatroban-target" min="30" max="120" step="5" value="60">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results and Alerts Section -->
+        <section class="results-section" style="grid-area: results;">
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Treatment Parameters</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Effluent Dose</h3>
+                        <div class="result-value" id="effluent-dose">25.0</div>
+                        <div class="result-unit">mL/kg/hr</div>
+                        <div class="result-range">(Recommended: 20-35)</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Clearance</h3>
+                        <div class="result-value" id="clearance">35</div>
+                        <div class="result-unit">L/day</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Filter Life</h3>
+                        <div class="result-value" id="filter-life">72</div>
+                        <div class="result-unit">hours</div>
+                        <div class="result-estimate">estimated</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>UF Rate</h3>
+                        <div class="result-value" id="uf-rate">100</div>
+                        <div class="result-unit">mL/hr</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Fractional Citrate</h3>
+                        <div class="result-value" id="fractional-citrate">0.85</div>
+                        <div class="result-range">(Target: 0.8-0.9)</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Metabolic Status</h3>
+                        <div class="result-value" id="metabolic-status">Neutral</div>
+                    </div>
+                </div>
+                <div class="electrolyte-predictions">
+                    <h3>Electrolyte Predictions (6h)</h3>
+                    <div class="prediction-grid">
+                        <div class="prediction-item">
+                            <span>K⁺:</span>
+                            <span id="pred-k" class="prediction-value">4.1</span> mEq/L
+                        </div>
+                        <div class="prediction-item">
+                            <span>HCO₃⁻:</span>
+                            <span id="pred-hco3" class="prediction-value">24</span> mEq/L
+                        </div>
+                        <div class="prediction-item">
+                            <span>iCa²⁺:</span>
+                            <span id="pred-ica" class="prediction-value">1.15</span> mmol/L
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Safety Alerts</h2>
+                <div class="alerts-container" id="alerts-container">
+                    <div class="alert warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="alert-message">Post-filter rate exceeds 30% of blood flow</div>
+                    </div>
+                    <div class="alert info">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="alert-message">Consider increasing citrate for filter longevity</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-clipboard-check"></i> Monitoring Plan</h2>
+                <div id="monitoring-plan-controls" class="monitoring-controls">
+                    <h3>Customize Monitoring Intervals</h3>
+                    <div class="monitoring-interval">
+                        <label for="labs-interval">Labs:</label>
+                        <select id="labs-interval">
+                            <option value="4">q4h</option>
+                            <option value="6" selected>q6h</option>
+                            <option value="8">q8h</option>
+                            <option value="12">q12h</option>
+                        </select>
+                    </div>
+                    <div class="monitoring-interval">
+                        <label for="citrate-interval">Citrate Safety:</label>
+                        <select id="citrate-interval">
+                            <option value="2">q2h</option>
+                            <option value="4" selected>q4h</option>
+                            <option value="6">q6h</option>
+                        </select>
+                    </div>
+                    <div class="monitoring-interval">
+                        <label for="circuit-interval">Circuit Check:</label>
+                        <select id="circuit-interval">
+                            <option value="1">q1h</option>
+                            <option value="2" selected>q2h</option>
+                            <option value="4">q4h</option>
+                        </select>
+                    </div>
+                </div>
+                <ul class="monitoring-list" id="monitoring-list">
+                    <li><i class="fas fa-clock"></i> <strong>q4h:</strong> Ionized Ca²⁺, Ca²⁺/Ca²⁺ total ratio</li>
+                    <li><i class="fas fa-clock"></i> <strong>q6h:</strong> K⁺, Na⁺, HCO₃⁻, BUN, Cr</li>
+                    <li><i class="fas fa-clock"></i> <strong>q2h:</strong> Filter pressures, access patency</li>
+                    <li><i class="fas fa-clock"></i> <strong>q8h:</strong> Circuit inspection, air trap check</li>
+                    <li><i class="fas fa-clock"></i> <strong>Daily:</strong> Mg²⁺, PO₄³⁻, albumin, liver enzymes</li>
+                </ul>
+                <div class="action-buttons">
+                    <button class="btn-action" id="generate-plan">
+                        <i class="fas fa-sync-alt"></i> Update Plan
+                    </button>
+                    <button class="btn-export" id="export-plan">
+                        <i class="fas fa-file-export"></i> Export Monitoring Plan
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Main Application Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('click', function() {
+                document.body.setAttribute('data-theme', 
+                    document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            });
+
+            // Modality Descriptions
+            const modalityDescriptions = {
+                'CVVH': {
+                    title: 'Continuous Veno-Venous Hemofiltration (CVVH)',
+                    description: 'Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.'
+                },
+                'CVVHD': {
+                    title: 'Continuous Veno-Venous Hemodialysis (CVVHD)',
+                    description: 'Provides diffusive clearance using a dialysate solution. No replacement fluid is used.'
+                },
+                'CVVHDF': {
+                    title: 'Continuous Veno-Venous Hemodiafiltration (CVVHDF)',
+                    description: 'Combines both diffusion (dialysate) and convection (replacement fluid) for enhanced solute clearance.'
+                },
+                'SCUF': {
+                    title: 'Slow Continuous Ultrafiltration (SCUF)',
+                    description: 'Primarily for fluid removal with minimal solute clearance. Used for volume overload with adequate renal function.'
+                },
+                'TPE': {
+                    title: 'Therapeutic Plasma Exchange (TPE)',
+                    description: 'Removes plasma and replaces with albumin or FFP. Used for immune-mediated conditions and toxin removal.'
+                }
+            };
+
+            // Modality Selection
+            const modalityBtns = document.querySelectorAll('.modality-btn');
+            modalityBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    modalityBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const selectedModality = this.dataset.modality;
+                    updateCircuitVisualization(selectedModality);
+                    updateModalityDescription(selectedModality);
+                    updateModalityControls(selectedModality);
+                    updateCalculations();
+                });
+            });
+
+            function updateModalityDescription(modality) {
+                const description = modalityDescriptions[modality];
+                const descriptionEl = document.getElementById('mode-description');
+                
+                if (description) {
+                    descriptionEl.innerHTML = `
+                        <h3>${description.title}</h3>
+                        <p>${description.description}</p>
+                    `;
+                }
+            }
+
+            function updateModalityControls(modality) {
+                // Show/hide fluid management sections based on modality
+                document.getElementById('prefilter-controls').style.display = 
+                    (modality === 'CVVH' || modality === 'CVVHDF') ? 'block' : 'none';
+                
+                document.getElementById('dialysate-controls').style.display = 
+                    (modality === 'CVVHD' || modality === 'CVVHDF') ? 'block' : 'none';
+                
+                document.getElementById('postfilter-controls').style.display = 
+                    (modality === 'CVVH' || modality === 'CVVHDF') ? 'block' : 'none';
+                
+                // Reset values for unused components
+                if (modality === 'CVVHD') {
+                    document.getElementById('prefilter-rate').value = 0;
+                    document.getElementById('postfilter-rate').value = 0;
+                } else if (modality === 'SCUF') {
+                    document.getElementById('prefilter-rate').value = 0;
+                    document.getElementById('dialysate-rate').value = 0;
+                    document.getElementById('postfilter-rate').value = 0;
+                } else if (modality === 'TPE') {
+                    document.getElementById('prefilter-rate').value = 0;
+                    document.getElementById('dialysate-rate').value = 0;
+                    // Set albumin or FFP replacement for TPE
+                    document.getElementById('postfilter-rate').value = 
+                        Math.round(document.getElementById('blood-flow').value * 60 * 0.85);
+                }
+            }
+
+            // Custom Solution Controls
+            document.getElementById('prefilter-solution').addEventListener('change', function() {
+                document.getElementById('prefilter-custom').style.display = 
+                    this.value === 'custom' ? 'block' : 'none';
+            });
+
+            document.getElementById('dialysate-solution').addEventListener('change', function() {
+                document.getElementById('dialysate-custom').style.display = 
+                    this.value === 'custom' ? 'block' : 'none';
+            });
+
+            // Anticoagulation Method Change
+            const anticoagMethod = document.getElementById('anticoag-method');
+            anticoagMethod.addEventListener('change', function() {
+                document.getElementById('citrate-controls').style.display = 
+                    this.value === 'citrate' ? 'block' : 'none';
+                document.getElementById('heparin-controls').style.display = 
+                    this.value === 'heparin' ? 'block' : 'none';
+                document.getElementById('argatroban-controls').style.display = 
+                    this.value === 'argatroban' ? 'block' : 'none';
+                
+                updateCalculations();
+            });
+
+            // Add Check Now button functionality
+            document.getElementById('check-now-btn').addEventListener('click', function() {
+                // Run a comprehensive check of all settings
+                updateCalculations();
+                validateSettings(true);
+                updateMonitoringPlan();
+                
+                // Visual feedback
+                this.classList.add('active');
+                setTimeout(() => {
+                    this.classList.remove('active');
+                }, 300);
+            });
+
+            // Real-time Calculations
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('change', updateCalculations);
+                input.addEventListener('input', updateCalculations);
+            });
+
+            function updateCircuitVisualization(modality) {
+                const svg = document.getElementById('circuit-svg');
+                // Show/hide paths based on modality
+                const showDialysate = (modality === 'CVVHD' || modality === 'CVVHDF');
+                const showPreReplacement = (modality === 'CVVH' || modality === 'CVVHDF');
+                const showPostReplacement = (modality === 'CVVH' || modality === 'CVVHDF' || modality === 'TPE');
+                
+                // Update path visibility
+                svg.querySelector('.dialysate-path').style.display = showDialysate ? 'block' : 'none';
+                svg.querySelector('.dialysate-label').style.display = showDialysate ? 'block' : 'none';
+                svg.querySelector('.pre-replacement-path').style.display = showPreReplacement ? 'block' : 'none';
+                svg.querySelector('.pre-replacement-label').style.display = showPreReplacement ? 'block' : 'none';
+                svg.querySelector('.post-replacement-path').style.display = showPostReplacement ? 'block' : 'none';
+                svg.querySelector('.post-replacement-label').style.display = showPostReplacement ? 'block' : 'none';
+                
+                // Update colors for TPE
+                if (modality === 'TPE') {
+                    svg.querySelector('.blood-path').setAttribute('stroke', '#8B0000');  // darker red
+                    svg.querySelector('.post-replacement-path').setAttribute('stroke', '#FFD700');  // gold for plasma
+                } else {
+                    svg.querySelector('.blood-path').setAttribute('stroke', '#e53e3e');  // regular red
+                    svg.querySelector('.post-replacement-path').setAttribute('stroke', '#dd6b20');  // regular orange
+                }
+                
+                // Update animation visibility
+                document.querySelector('.dialysate-animation').style.display = showDialysate ? 'block' : 'none';
+            }
+
+            function updateCalculations() {
+                // Get all input values
+                const weight = parseFloat(document.getElementById('weight').value) || 70;
+                const age = parseInt(document.getElementById('age').value) || 50;
+                const bloodFlow = parseInt(document.getElementById('blood-flow').value) || 150;
+                const prefilterRate = parseInt(document.getElementById('prefilter-rate').value) || 0;
+                const dialysateRate = parseInt(document.getElementById('dialysate-rate').value) || 0;
+                const postfilterRate = parseInt(document.getElementById('postfilter-rate').value) || 0;
+                const netUfRate = parseInt(document.getElementById('net-uf-rate').value) || 0;
+                
+                // Calculate effluent dose based on modality
+                const activeModality = document.querySelector('.modality-btn.active').dataset.modality;
+                let effluentRate = 0;
+                
+                switch(activeModality) {
+                    case 'CVVH':
+                        effluentRate = prefilterRate + postfilterRate;
+                        break;
+                    case 'CVVHD':
+                        effluentRate = dialysateRate;
+                        break;
+                    case 'CVVHDF':
+                        // Adjusted for sieving coefficients
+                        effluentRate = (prefilterRate * 0.8) + dialysateRate + (postfilterRate * 0.9);
+                        break;
+                    case 'SCUF':
+                        effluentRate = netUfRate;
+                        break;
+                    case 'TPE':
+                        effluentRate = postfilterRate;
+                        break;
+                }
+                
+                const effluentDose = effluentRate / weight;
+                document.getElementById('effluent-dose').textContent = effluentDose.toFixed(1);
+                
+                // Update other calculations
+                document.getElementById('clearance').textContent = Math.round(effluentRate * 24 / 1000);
+                
+                // Calculate filter life estimate based on anticoagulation and flow rates
+                let filterLifeEstimate = 72; // Default 72 hours
+                const anticoagMethod = document.getElementById('anticoag-method').value;
+                
+                if (anticoagMethod === 'citrate') {
+                    filterLifeEstimate = 96; // Better with citrate
+                } else if (anticoagMethod === 'none') {
+                    filterLifeEstimate = 24; // Worse without anticoagulation
+                }
+                
+                // Adjust for flow rates and ratios
+                if (activeModality === 'CVVH' && postfilterRate > bloodFlow * 18) {
+                    filterLifeEstimate *= 0.8; // High post-filter rates reduce filter life
+                }
+                
+                // Show estimated filter life
+                document.getElementById('filter-life').textContent = Math.round(filterLifeEstimate);
+                
+                // Calculate UF rate
+                const ufRate = netUfRate;
+                document.getElementById('uf-rate').textContent = ufRate;
+                
+                // Update blood flow display
+                document.getElementById('blood-flow-value').textContent = bloodFlow;
+                
+                // Update circuit pressures based on flows
+                document.getElementById('access-pressure').textContent = 
+                    Math.round(-50 - bloodFlow * 0.2);
+                document.getElementById('pre-filter-pressure').textContent = 
+                    Math.round(100 + bloodFlow * 0.8 + prefilterRate * 0.02);
+                document.getElementById('return-pressure').textContent = 
+                    Math.round(50 + bloodFlow * 0.2);
+                document.getElementById('tmp-pressure').textContent = 
+                    Math.round(30 + bloodFlow * 0.5 + effluentRate * 0.01);
+                
+                // Calculate citrate dose if using citrate anticoagulation
+                if (anticoagMethod === 'citrate') {
+                    const citrateRate = parseInt(document.getElementById('citrate-rate').value) || 0;
+                    const citrateDose = (citrateRate * 0.113) / (bloodFlow * 0.06); // ACD-A has 113 mmol/L citrate
+                    document.getElementById('citrate-dose-value').textContent = citrateDose.toFixed(1);
+                    
+                    // Calculate fractional citrate clearance
+                    const fractionalCitrate = 0.5 + Math.random() * 0.4; // Simulated value
+                    document.getElementById('fractional-citrate').textContent = fractionalCitrate.toFixed(2);
+                }
+                
+                // Update predicted electrolytes
+                updatePredictedElectrolytes();
+                
+                // Validate settings for safety
+                validateSettings();
+            }
+
+            function updatePredictedElectrolytes() {
+                // Simulated predictions - in a real app these would be calculated based on
+                // current labs, fluid compositions, and clearance rates
+                document.getElementById('pred-k').textContent = (3.8 + Math.random() * 0.8).toFixed(1);
+                document.getElementById('pred-hco3').textContent = Math.round(22 + Math.random() * 4);
+                document.getElementById('pred-ica').textContent = (1.1 + Math.random() * 0.2).toFixed(2);
+                
+                // Set metabolic status based on predicted values
+                const hco3 = parseFloat(document.getElementById('pred-hco3').textContent);
+                let status = 'Neutral';
+                
+                if (hco3 < 22) status = 'Acidotic';
+                else if (hco3 > 28) status = 'Alkalotic';
+                
+                document.getElementById('metabolic-status').textContent = status;
+            }
+
+            // Additional functionality for the monitoring plan 
+            document.getElementById('generate-plan').addEventListener('click', function() {
+                updateMonitoringPlan();
+            });
+            
+            function updateMonitoringPlan() {
+                const labsInterval = document.getElementById('labs-interval').value;
+                const citrateInterval = document.getElementById('citrate-interval').value;
+                const circuitInterval = document.getElementById('circuit-interval').value;
+                const anticoagMethod = document.getElementById('anticoag-method').value;
+                
+                const monitoringList = document.getElementById('monitoring-list');
+                monitoringList.innerHTML = '';
+                
+                // Basic labs monitoring
+                const labItem = document.createElement('li');
+                labItem.innerHTML = `<i class="fas fa-clock"></i> <strong>q${labsInterval}h:</strong> K⁺, Na⁺, HCO₃⁻, BUN, Cr`;
+                monitoringList.appendChild(labItem);
+                
+                // Circuit monitoring
+                const circuitItem = document.createElement('li');
+                circuitItem.innerHTML = `<i class="fas fa-clock"></i> <strong>q${circuitInterval}h:</strong> Filter pressures, access patency, air trap check`;
+                monitoringList.appendChild(circuitItem);
+                
+                // Add anticoagulation-specific monitoring
+                if (anticoagMethod === 'citrate') {
+                    const citrateItem = document.createElement('li');
+                    citrateItem.innerHTML = `<i class="fas fa-clock"></i> <strong>q${citrateInterval}h:</strong> Ionized Ca²⁺, Ca²⁺/Ca²⁺ total ratio`;
+                    monitoringList.appendChild(citrateItem);
+                } else if (anticoagMethod === 'heparin') {
+                    const heparinItem = document.createElement('li');
+                    heparinItem.innerHTML = `<i class="fas fa-clock"></i> <strong>q6h:</strong> aPTT, Anti-Xa level daily`;
+                    monitoringList.appendChild(heparinItem);
+                } else if (anticoagMethod === 'argatroban') {
+                    const argatrobanItem = document.createElement('li');
+                    argatrobanItem.innerHTML = `<i class="fas fa-clock"></i> <strong>q4h:</strong> aPTT until stable, then q6h`;
+                    monitoringList.appendChild(argatrobanItem);
+                }
+                
+                // Daily labs for all modalities
+                const dailyItem = document.createElement('li');
+                dailyItem.innerHTML = `<i class="fas fa-clock"></i> <strong>Daily:</strong> Mg²⁺, PO₄³⁻, albumin, liver enzymes`;
+                monitoringList.appendChild(dailyItem);
+                
+                // Additional monitoring for TPE
+                const activeModality = document.querySelector('.modality-btn.active').dataset.modality;
+                if (activeModality === 'TPE') {
+                    const tpeItem = document.createElement('li');
+                    tpeItem.innerHTML = `<i class="fas fa-clock"></i> <strong>Pre/Post treatment:</strong> Target antibody levels, coagulation parameters`;
+                    monitoringList.appendChild(tpeItem);
+                }
+            }
+            
+            function validateSettings(comprehensive = false) {
+                const alertsContainer = document.getElementById('alerts-container');
+                alertsContainer.innerHTML = '';
+                
+                const weight = parseFloat(document.getElementById('weight').value) || 70;
+                const effluentDose = parseFloat(document.getElementById('effluent-dose').textContent);
+                const postfilterRate = parseInt(document.getElementById('postfilter-rate').value) || 0;
+                const bloodFlow = parseInt(document.getElementById('blood-flow').value) || 150;
+                const activeModality = document.querySelector('.modality-btn.active').dataset.modality;
+                
+                // Check effluent dose
+                if(effluentDose < 20 && activeModality !== 'SCUF' && activeModality !== 'TPE') {
+                    addAlert('warning', 'Effluent dose below recommended minimum (20 mL/kg/hr)');
+                } else if(effluentDose > 35 && activeModality !== 'TPE') {
+                    addAlert('warning', 'Effluent dose above typical recommendations (35 mL/kg/hr)');
+                }
+                
+                // Check post-filter ratio
+                if(postfilterRate > 0 && postfilterRate > bloodFlow * 60 * 0.3 && activeModality !== 'TPE') {
+                    addAlert('danger', 'Post-filter rate exceeds 30% of blood flow - high clotting risk');
+                }
+                
+                // Check anticoagulation
+                const anticoagMethod = document.getElementById('anticoag-method').value;
+                if(postfilterRate > 0 && anticoagMethod === 'none' && activeModality !== 'TPE') {
+                    addAlert('danger', 'Post-filter administration without anticoagulation increases clotting risk');
+                }
+                
+                // Check blood flow
+                if(bloodFlow < 100 && activeModality !== 'SCUF') {
+                    addAlert('warning', 'Blood flow below 100 mL/min may reduce treatment efficiency');
+                }
+                
+                // Check age adjustments
+                const age = parseInt(document.getElementById('age').value) || 50;
+                if(age > 75 && anticoagMethod === 'heparin') {
+                    addAlert('info', 'Consider citrate anticoagulation for elderly patients');
+                }
+                
+                // Comprehensive checks (only run when Check Now button is clicked)
+                if (comprehensive) {
+                    // Check TMP pressure
+                    const tmpPressure = parseInt(document.getElementById('tmp-pressure').textContent);
+                    if (tmpPressure > 200) {
+                        addAlert('danger', 'TMP pressure too high - filter may be clotting');
+                    }
+                    
+                    // Check for citrate accumulation risk
+                    if (anticoagMethod === 'citrate') {
+                        const citrateDose = parseFloat(document.getElementById('citrate-dose-value').textContent);
+                        if (citrateDose > 4.5) {
+                            addAlert('danger', 'Citrate dose too high - risk of citrate toxicity');
+                        }
+                        
+                        // Check fractional citrate clearance
+                        const fractionalCitrate = parseFloat(document.getElementById('fractional-citrate').textContent);
+                        if (fractionalCitrate < 0.7) {
+                            addAlert('danger', 'Low fractional citrate clearance - monitor for citrate accumulation');
+                        }
+                    }
+                    
+                    // Fluid balance check
+                    const netUfRate = parseInt(document.getElementById('net-uf-rate').value) || 0;
+                    if (netUfRate > 400) {
+                        addAlert('warning', 'High ultrafiltration rate - monitor for hemodynamic instability');
+                    }
+                }
+            }
+
+            function addAlert(type, message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${type}`;
+                alertDiv.innerHTML = `
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 
+                                      type === 'warning' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <div class="alert-message">${message}</div>
+                `;
+                document.getElementById('alerts-container').appendChild(alertDiv);
+            }
+
+            // Export Monitoring Plan
+            document.getElementById('export-plan').addEventListener('click', function() {
+                // Create a plain text version of the monitoring plan
+                let planText = "CRRT MONITORING PLAN\n";
+                planText += "===================\n\n";
+                planText += "Patient: _____________________  Date: ______________\n\n";
+                planText += "CRRT Mode: " + document.querySelector('.modality-btn.active').dataset.modality + "\n";
+                planText += "Anticoagulation: " + document.getElementById('anticoag-method').value + "\n\n";
+                planText += "MONITORING SCHEDULE:\n";
+                
+                const monitoringItems = document.querySelectorAll('.monitoring-list li');
+                monitoringItems.forEach(item => {
+                    planText += "- " + item.textContent.trim() + "\n";
+                });
+                
+                planText += "\nALERTS:\n";
+                const alertItems = document.querySelectorAll('.alert');
+                alertItems.forEach(item => {
+                    planText += "- " + item.textContent.trim() + "\n";
+                });
+                
+                // Create a downloadable file
+                const blob = new Blob([planText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'CRRT_Monitoring_Plan.txt';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 0);
+            });
+
+            // Initialize
+            updateCircuitVisualization('CVVH');
+            updateModalityDescription('CVVH');
+            updateCalculations();
+            updateMonitoringPlan();
+            
+            // Initialize waveform animations
+            initWaveformAnimations();
+        });
+        
+        // Waveform Animation Functions
+        function initWaveformAnimations() {
+            const canvas = document.getElementById('waveform-canvas');
+            const ctx = canvas.getContext('2d');
+            let animationFrame;
+            let currentWaveType = 'pressure'; // Default waveform type
+            
+            // Set up tab switching
+            const tabs = document.querySelectorAll('.waveform-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentWaveType = this.dataset.wave;
+                });
+            });
+            
+            // Animation variables
+            let time = 0;
+            const speed = 0.05;
+            
+            // Generate waveform points
+            function generatePressureWaveform(t, height, width) {
+                const points = [];
+                const cycles = 3; // Number of pressure cycles to show
+                
+                for (let x = 0; x < width; x++) {
+                    // Position in the cycle (0 to 1)
+                    const position = ((x / width) * cycles + t) % 1;
+                    
+                    let y;
+                    
+                    // Filter pressure waveform shape - CRRT specific
+                    if (position < 0.1) {
+                        // Initial rise (filter loading)
+                        y = height * 0.4 * (position / 0.1);
+                    } else if (position < 0.7) {
+                        // Filter efficiency plateau with slight increase
+                        y = height * 0.4 + (position - 0.1) * height * 0.2;
+                    } else if (position < 0.9) {
+                        // Pressure drop (filter cleaning)
+                        y = height * 0.5 * (1 - (position - 0.7) / 0.2);
+                    } else {
+                        // Baseline
+                        y = height * 0.1;
+                    }
+                    
+                    // Invert and shift
+                    y = height - (y + height * 0.2);
+                    
+                    points.push({ x, y });
+                }
+                
+                return points;
+            }
+            
+            function generateFlowWaveform(t, height, width) {
+                const points = [];
+                const cycles = 3; // Number of flow cycles to show
+                
+                for (let x = 0; x < width; x++) {
+                    // Position in the cycle (0 to 1)
+                    const position = ((x / width) * cycles + t) % 1;
+                    
+                    let y;
+                    
+                    // CRRT blood flow waveform shape
+                    if (position < 0.1) {
+                        // Pump stroke initiation
+                        const normalizedPos = position / 0.1;
+                        y = Math.sin(normalizedPos * Math.PI/2) * height * 0.3;
+                    } else if (position < 0.5) {
+                        // Steady flow during pump stroke
+                        y = height * 0.3 + Math.sin(((position - 0.1) / 0.4) * Math.PI) * height * 0.05;
+                    } else if (position < 0.6) {
+                        // Flow decrease between pump cycles
+                        const normalizedPos = (position - 0.5) / 0.1;
+                        y = height * 0.3 * (1 - normalizedPos);
+                    } else {
+                        // Low flow between pump cycles
+                        y = height * 0.05 * Math.sin(((position - 0.6) / 0.4) * Math.PI * 2);
+                    }
+                    
+                    // Invert and shift
+                    y = height / 2 - y;
+                    
+                    points.push({ x, y });
+                }
+                
+                return points;
+            }
+            
+            // Draw the waveform
+            function drawWaveform() {
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw grid
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 0.5;
+                
+                // Vertical grid lines
+                for (let x = 0; x <= width; x += width / 10) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                
+                // Horizontal grid lines
+                for (let y = 0; y <= height; y += height / 5) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Generate points based on current waveform type
+                const points = currentWaveType === 'pressure' 
+                    ? generatePressureWaveform(time, height, width)
+                    : generateFlowWaveform(time, height, width);
+                
+                // Draw curve
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = currentWaveType === 'pressure' ? '#e53e3e' : '#38a169';
+                ctx.stroke();
+                
+                // Add zero line for flow
+                if (currentWaveType === 'flow') {
+                    ctx.beginPath();
+                    ctx.moveTo(0, height / 2);
+                    ctx.lineTo(width, height / 2);
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                
+                // Add labels
+                ctx.font = '12px sans-serif';
+                ctx.fillStyle = 'var(--text)';
+                
+                if (currentWaveType === 'pressure') {
+                    ctx.fillText('mmHg', 5, 15);
+                    ctx.fillText('200', 5, height * 0.2 + 5);
+                    ctx.fillText('100', 5, height * 0.6 + 5);
+                    ctx.fillText('0', 5, height - 5);
+                } else {
+                    ctx.fillText('mL/min', 5, 15);
+                    ctx.fillText('300', 5, height * 0.1 + 5);
+                    ctx.fillText('150', 5, height / 2 + 5);
+                    ctx.fillText('0', 5, height * 0.9 + 5);
+                }
+                
+                // Update time for animation
+                time = (time + speed) % 1;
+                
+                // Continue animation
+                animationFrame = requestAnimationFrame(drawWaveform);
+            }
+            
+            // Start animation
+            drawWaveform();
+            
+            // Update circuit animation visibility based on modality
+            function updateCircuitAnimations(modality) {
+                const showDialysate = (modality === 'CVVHD' || modality === 'CVVHDF');
+                const showPreRepl = (modality === 'CVVH' || modality === 'CVVHDF');
+                const showPostRepl = (modality === 'CVVH' || modality === 'CVVHDF' || modality === 'TPE');
+                
+                document.querySelector('.dialysate-animation').style.display = showDialysate ? 'block' : 'none';
+                document.querySelector('.pre-replacement-animation').style.display = showPreRepl ? 'block' : 'none';
+                document.querySelector('.post-replacement-animation').style.display = showPostRepl ? 'block' : 'none';
+            }
+            
+            // Connect to existing modality buttons
+            const modalityBtns = document.querySelectorAll('.modality-btn');
+            modalityBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateCircuitAnimations(this.dataset.modality);
+                });
+            });
+            
+            // Initial update
+            updateCircuitAnimations('CVVH');
+        }
+    </script>
+</body>
+</html>
