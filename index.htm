@@ -3,287 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NephroFlow CRRT Suite</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/themes/dark.css" id="theme-style">
+    <title>NephroGuide CRRT Decision Support</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --secondary: #4299e1;
+            --danger: #e53e3e;
+            --warning: #dd6b20;
+            --success: #38a169;
+            --background: #f7fafc;
+            --text: #1a202c;
+            --card-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3182ce;
+            --secondary: #63b3ed;
+            --danger: #fc8181;
+            --warning: #f6ad55;
+            --success: #68d391;
+            --background: #1a202c;
+            --text: #f7fafc;
+            --card-bg: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "patient circuit fluids"
+                "results results results";
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Detailed styling for all components... */
+        /* (Would include styles for inputs, buttons, circuit visualization, etc.) */
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-wrapper">
-        <!-- Top Navigation -->
-        <nav class="app-nav">
-            <div class="branding">
-                <img src="assets/icons/logo.svg" alt="NephroFlow Logo" class="logo">
-                <h1>CRRT Management Suite</h1>
-            </div>
-            <div class="app-controls">
-                <div class="language-selector">
-                    <select id="language-select" aria-label="Select interface language">
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header" style="grid-area: header;">
+            <div class="header-content">
+                <h1><i class="fas fa-heartbeat"></i> NephroGuide CRRT Decision Support</h1>
+                <div class="app-controls">
+                    <button id="theme-toggle"><i class="fas fa-moon"></i> Theme</button>
+                    <select id="language-select">
                         <option value="en">English</option>
                         <option value="es">Español</option>
                         <option value="fr">Français</option>
-                        <option value="de">Deutsch</option>
-                        <option value="zh">中文</option>
                     </select>
                 </div>
-                <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">
-                    <svg class="theme-icon"><use href="assets/icons/theme.svg#icon"></use></svg>
-                </button>
-                <button id="help-btn" class="icon-btn" aria-label="Open help">
-                    <svg class="help-icon"><use href="assets/icons/help.svg#icon"></use></svg>
+            </div>
+        </header>
+
+        <!-- Patient Data Section -->
+        <section class="patient-section" style="grid-area: patient;">
+            <div class="card">
+                <h2><i class="fas fa-user-circle"></i> Patient Data</h2>
+                <div class="input-group">
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" min="20" max="300" step="0.1" value="70">
+                </div>
+                <div class="input-group">
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" min="100" max="250" value="170">
+                </div>
+                <div class="input-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" min="18" max="120" value="50">
+                </div>
+                <div class="input-group">
+                    <label for="apache">APACHE II Score:</label>
+                    <input type="number" id="apache" min="0" max="71" value="15">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-flask"></i> Current Labs</h2>
+                <div class="lab-grid">
+                    <div class="lab-item">
+                        <label>K⁺ (mEq/L):</label>
+                        <input type="number" class="lab-value" value="4.2" step="0.1">
+                    </div>
+                    <div class="lab-item">
+                        <label>HCO₃⁻ (mEq/L):</label>
+                        <input type="number" class="lab-value" value="22" step="1">
+                    </div>
+                    <div class="lab-item">
+                        <label>Creatinine (mg/dL):</label>
+                        <input type="number" class="lab-value" value="2.5" step="0.1">
+                    </div>
+                    <div class="lab-item">
+                        <label>pH:</label>
+                        <input type="number" class="lab-value" value="7.32" step="0.01">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Circuit Visualization Section -->
+        <section class="circuit-section" style="grid-area: circuit;">
+            <div class="card">
+                <div class="circuit-header">
+                    <h2><i class="fas fa-project-diagram"></i> CRRT Circuit</h2>
+                    <div class="modality-tabs">
+                        <button class="modality-btn active" data-modality="CVVH">CVVH</button>
+                        <button class="modality-btn" data-modality="CVVHD">CVVHD</button>
+                        <button class="modality-btn" data-modality="CVVHDF">CVVHDF</button>
+                    </div>
+                </div>
+                <div class="circuit-animation" id="circuit-animation">
+                    <!-- Dynamic SVG will be inserted here -->
+                    <svg width="100%" height="400" viewBox="0 0 800 400" id="circuit-svg">
+                        <!-- Blood path -->
+                        <path class="blood-path" d="M50,200 L200,200" stroke-width="8" stroke="#e53e3e" fill="none" />
+                        <!-- Filter -->
+                        <rect x="200" y="150" width="100" height="100" fill="#e2e8f0" stroke="#4a5568" />
+                        <!-- Return path -->
+                        <path class="return-path" d="M300,200 L450,200" stroke-width="8" stroke="#38a169" fill="none" />
+                        <!-- Dialysate path (shown in CVVHD/CVVHDF) -->
+                        <path class="dialysate-path" d="M200,100 L200,150 M200,250 L200,300" stroke-width="6" stroke="#4299e1" fill="none" style="display: none;" />
+                        <!-- Replacement fluid path -->
+                        <path class="replacement-path" d="M250,200 L300,200" stroke-width="6" stroke="#d69e2e" fill="none" />
+                    </svg>
+                </div>
+                <div class="circuit-controls">
+                    <div class="control-group">
+                        <label for="blood-flow">Blood Flow (mL/min):</label>
+                        <input type="range" id="blood-flow" min="50" max="300" value="150">
+                        <span id="blood-flow-value">150</span>
+                    </div>
+                    <div class="pressure-readings">
+                        <div class="pressure">
+                            <span>Pre-filter: </span>
+                            <span class="pressure-value" id="pre-filter-pressure">180</span> mmHg
+                        </div>
+                        <div class="pressure">
+                            <span>TMP: </span>
+                            <span class="pressure-value" id="tmp-pressure">120</span> mmHg
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fluid Management Section -->
+        <section class="fluid-section" style="grid-area: fluids;">
+            <div class="card">
+                <h2><i class="fas fa-tint"></i> Fluid Management</h2>
+                
+                <div class="fluid-control-group">
+                    <h3><i class="fas fa-inbox"></i> Pre-filter Replacement</h3>
+                    <div class="fluid-control">
+                        <label for="prefilter-rate">Rate (mL/hr):</label>
+                        <input type="number" id="prefilter-rate" min="0" max="5000" step="50" value="1000">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="prefilter-solution">Solution:</label>
+                        <select id="prefilter-solution">
+                            <option value="bicarbonate">Bicarbonate (Na 140, HCO₃ 32)</option>
+                            <option value="citrate">Citrate (ACD-A)</option>
+                            <option value="custom">Custom Composition</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="fluid-control-group">
+                    <h3><i class="fas fa-filter"></i> Dialysate</h3>
+                    <div class="fluid-control">
+                        <label for="dialysate-rate">Rate (mL/hr):</label>
+                        <input type="number" id="dialysate-rate" min="0" max="5000" step="50" value="2000">
+                    </div>
+                    <div class="fluid-control">
+                        <label for="dialysate-solution">Composition:</label>
+                        <select id="dialysate-solution">
+                            <option value="standard">Standard (K 4.0)</option>
+                            <option value="lowK">Low Potassium (K 2.0)</option>
+                            <option value="highBicarb">High Bicarbonate (HCO₃ 40)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="fluid-control-group">
+                    <h3><i class="fas fa-outdent"></i> Post-filter Replacement</h3>
+                    <div class="fluid-control">
+                        <label for="postfilter-rate">Rate (mL/hr):</label>
+                        <input type="number" id="postfilter-rate" min="0" max="3000" step="50" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-syringe"></i> Anticoagulation</h2>
+                <div class="anticoag-controls">
+                    <div class="anticoag-selector">
+                        <label for="anticoag-method">Method:</label>
+                        <select id="anticoag-method">
+                            <option value="citrate">Regional Citrate</option>
+                            <option value="heparin">Heparin</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div id="citrate-controls" class="anticoag-params">
+                        <div class="param-group">
+                            <label for="citrate-rate">ACD-A Rate (mL/hr):</label>
+                            <input type="number" id="citrate-rate" min="0" max="500" value="150">
+                        </div>
+                        <div class="param-group">
+                            <label for="calcium-rate">Calcium Rate (mmol/hr):</label>
+                            <input type="number" id="calcium-rate" min="0" max="10" step="0.1" value="2.5">
+                        </div>
+                    </div>
+                    <div id="heparin-controls" class="anticoag-params" style="display: none;">
+                        <div class="param-group">
+                            <label for="heparin-rate">Heparin Rate (units/hr):</label>
+                            <input type="number" id="heparin-rate" min="0" max="5000" step="100" value="1000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results and Alerts Section -->
+        <section class="results-section" style="grid-area: results;">
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Treatment Parameters</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Effluent Dose</h3>
+                        <div class="result-value" id="effluent-dose">25.0</div>
+                        <div class="result-unit">mL/kg/hr</div>
+                        <div class="result-range">(Recommended: 20-35)</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Clearance</h3>
+                        <div class="result-value" id="clearance">35</div>
+                        <div class="result-unit">L/day</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Filter Life</h3>
+                        <div class="result-value" id="filter-life">72</div>
+                        <div class="result-unit">hours</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>UF Rate</h3>
+                        <div class="result-value" id="uf-rate">100</div>
+                        <div class="result-unit">mL/hr</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Safety Alerts</h2>
+                <div class="alerts-container" id="alerts-container">
+                    <div class="alert warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="alert-message">Post-filter rate exceeds 30% of blood flow</div>
+                    </div>
+                    <div class="alert info">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="alert-message">Consider increasing citrate for filter longevity</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-clipboard-check"></i> Monitoring Plan</h2>
+                <ul class="monitoring-list" id="monitoring-list">
+                    <li><i class="fas fa-clock"></i> Ionized Ca²⁺ q4h</li>
+                    <li><i class="fas fa-clock"></i> K⁺, HCO₃⁻ q6h</li>
+                    <li><i class="fas fa-clock"></i> Filter pressures q1h</li>
+                    <li><i class="fas fa-clock"></i> Circuit inspection q8h</li>
+                </ul>
+                <button class="btn-export" id="export-plan">
+                    <i class="fas fa-file-export"></i> Export Monitoring Plan
                 </button>
             </div>
-        </nav>
-
-        <!-- Main Application Grid -->
-        <div class="app-grid">
-            <!-- Patient Parameters Column -->
-            <section class="patient-col">
-                <div class="parameter-card">
-                    <h2 class="card-title">Patient Profile</h2>
-                    <div class="input-group">
-                        <label for="patient-weight">Weight (kg)</label>
-                        <input type="number" id="patient-weight" min="20" max="300" step="0.1" value="70">
-                    </div>
-                    <div class="input-group">
-                        <label for="patient-age">Age</label>
-                        <div class="range-input">
-                            <input type="range" id="patient-age" min="18" max="120" value="50">
-                            <span id="age-display">50</span>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="patient-height">Height (cm)</label>
-                        <input type="number" id="patient-height" min="100" max="250" value="170">
-                    </div>
-                    <div class="input-group">
-                        <label for="apache-score">APACHE II Score</label>
-                        <input type="number" id="apache-score" min="0" max="71" value="15">
-                    </div>
-                </div>
-
-                <div class="parameter-card">
-                    <h2 class="card-title">Lab Values</h2>
-                    <div class="lab-grid">
-                        <div class="lab-item">
-                            <label>K⁺ (mEq/L)</label>
-                            <input type="number" class="lab-value" value="4.2" step="0.1" min="1" max="10">
-                        </div>
-                        <div class="lab-item">
-                            <label>HCO₃⁻ (mEq/L)</label>
-                            <input type="number" class="lab-value" value="22" step="1" min="5" max="50">
-                        </div>
-                        <div class="lab-item">
-                            <label>Ca²⁺ (mg/dL)</label>
-                            <input type="number" class="lab-value" value="8.5" step="0.1" min="4" max="15">
-                        </div>
-                        <div class="lab-item">
-                            <label>BUN (mg/dL)</label>
-                            <input type="number" class="lab-value" value="45" step="1" min="5" max="200">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CRRT Circuit Visualization -->
-            <section class="circuit-col">
-                <div class="circuit-card">
-                    <div class="circuit-header">
-                        <h2 class="card-title">CRRT Circuit</h2>
-                        <div class="modality-tabs">
-                            <button class="modality-tab active" data-modality="CVVH">CVVH</button>
-                            <button class="modality-tab" data-modality="CVVHD">CVVHD</button>
-                            <button class="modality-tab" data-modality="CVVHDF">CVVHDF</button>
-                        </div>
-                    </div>
-                    <div class="circuit-animation" id="circit-animation-container">
-                        <!-- Dynamic SVG will be inserted here -->
-                    </div>
-                    <div class="circuit-controls">
-                        <div class="flow-control">
-                            <label for="blood-flow">Blood Flow (mL/min)</label>
-                            <input type="range" id="blood-flow" min="50" max="300" value="150">
-                            <span class="flow-value">150</span>
-                        </div>
-                        <div class="pressure-readings">
-                            <div class="pressure">
-                                <span class="pressure-label">Pre-filter</span>
-                                <span class="pressure-value normal">180 mmHg</span>
-                            </div>
-                            <div class="pressure">
-                                <span class="pressure-label">TMP</span>
-                                <span class="pressure-value normal">120 mmHg</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Fluid Management Column -->
-            <section class="fluid-col">
-                <div class="fluid-card">
-                    <h2 class="card-title">Fluid Management</h2>
-                    
-                    <!-- Pre-filter Section -->
-                    <div class="fluid-section">
-                        <h3 class="fluid-heading">
-                            <svg class="fluid-icon"><use href="assets/icons/prefilter.svg#icon"></use></svg>
-                            Pre-filter Replacement
-                        </h3>
-                        <div class="fluid-controls">
-                            <div class="fluid-rate">
-                                <label for="prefilter-rate">Rate (mL/hr)</label>
-                                <input type="number" id="prefilter-rate" min="0" max="5000" step="50" value="1000">
-                            </div>
-                            <div class="fluid-composition">
-                                <label for="prefilter-solution">Solution</label>
-                                <select id="prefilter-solution">
-                                    <option value="bicarb">Bicarbonate (Na 140, HCO₃ 32)</option>
-                                    <option value="citrate">Citrate (ACD-A)</option>
-                                    <option value="custom">Custom Composition</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dialysate Section -->
-                    <div class="fluid-section">
-                        <h3 class="fluid-heading">
-                            <svg class="fluid-icon"><use href="assets/icons/dialysate.svg#icon"></use></svg>
-                            Dialysate
-                        </h3>
-                        <div class="fluid-controls">
-                            <div class="fluid-rate">
-                                <label for="dialysate-rate">Rate (mL/hr)</label>
-                                <input type="number" id="dialysate-rate" min="0" max="5000" step="50" value="2000">
-                            </div>
-                            <div class="fluid-composition">
-                                <label for="dialysate-solution">Composition</label>
-                                <select id="dialysate-solution">
-                                    <option value="standard">Standard (K 4.0)</option>
-                                    <option value="lowK">Low Potassium (K 2.0)</option>
-                                    <option value="highBicarb">High Bicarbonate (HCO₃ 40)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Post-filter Section -->
-                    <div class="fluid-section">
-                        <h3 class="fluid-heading">
-                            <svg class="fluid-icon"><use href="assets/icons/postfilter.svg#icon"></use></svg>
-                            Post-filter Replacement
-                        </h3>
-                        <div class="fluid-controls">
-                            <div class="fluid-rate">
-                                <label for="postfilter-rate">Rate (mL/hr)</label>
-                                <input type="number" id="postfilter-rate" min="0" max="3000" step="50" value="0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Anticoagulation Section -->
-                <div class="anticoag-card">
-                    <h2 class="card-title">Anticoagulation</h2>
-                    <div class="anticoag-controls">
-                        <div class="anticoag-selector">
-                            <select id="anticoag-method">
-                                <option value="citrate">Regional Citrate</option>
-                                <option value="heparin">Heparin</option>
-                                <option value="none">None</option>
-                            </select>
-                        </div>
-                        <div class="anticoag-params" id="citrate-params">
-                            <div class="param-group">
-                                <label for="citrate-rate">ACD-A Rate (mL/hr)</label>
-                                <input type="number" id="citrate-rate" min="0" max="500" value="150">
-                            </div>
-                            <div class="param-group">
-                                <label for="calcium-rate">Calcium Rate (mmol/hr)</label>
-                                <input type="number" id="calcium-rate" min="0" max="10" step="0.1" value="2.5">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Results and Monitoring Column -->
-            <section class="results-col">
-                <div class="results-card">
-                    <h2 class="card-title">Treatment Summary</h2>
-                    <div class="results-grid">
-                        <div class="result-item primary">
-                            <div class="result-label">Effluent Dose</div>
-                            <div class="result-value">24.8</div>
-                            <div class="result-unit">mL/kg/hr</div>
-                        </div>
-                        <div class="result-item">
-                            <div class="result-label">Ultrafiltration</div>
-                            <div class="result-value">100</div>
-                            <div class="result-unit">mL/hr</div>
-                        </div>
-                        <div class="result-item">
-                            <div class="result-label">Filter Life</div>
-                            <div class="result-value">68</div>
-                            <div class="result-unit">hours</div>
-                        </div>
-                        <div class="result-item">
-                            <div class="result-label">Clearance</div>
-                            <div class="result-value">35</div>
-                            <div class="result-unit">L/day</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="alerts-card">
-                    <h2 class="card-title">Safety Alerts</h2>
-                    <div class="alerts-list" id="safety-alerts">
-                        <div class="alert-item warning">
-                            <svg class="alert-icon"><use href="assets/icons/warning.svg#icon"></use></svg>
-                            <div class="alert-message">Post-filter rate exceeds 30% of blood flow</div>
-                        </div>
-                        <div class="alert-item info">
-                            <svg class="alert-icon"><use href="assets/icons/info.svg#icon"></use></svg>
-                            <div class="alert-message">Consider increasing citrate for filter longevity</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="monitoring-card">
-                    <h2 class="card-title">Monitoring Plan</h2>
-                    <ul class="monitoring-list">
-                        <li>Ionized Ca²⁺ q4h</li>
-                        <li>K⁺, HCO₃⁻ q6h</li>
-                        <li>Filter pressures q1h</li>
-                        <li>Circuit inspection q8h</li>
-                    </ul>
-                </div>
-            </section>
-        </div>
-
-        <!-- Action Footer -->
-        <footer class="action-footer">
-            <button class="btn-secondary" id="reset-btn">
-                <svg class="btn-icon"><use href="assets/icons/reset.svg#icon"></use></svg>
-                Reset
-            </button>
-            <button class="btn-primary" id="save-btn">
-                <svg class="btn-icon"><use href="assets/icons/save.svg#icon"></use></svg>
-                Save Protocol
-            </button>
-            <button class="btn-export" id="export-btn">
-                <svg class="btn-icon"><use href="assets/icons/export.svg#icon"></use></svg>
-                Export PDF
-            </button>
-        </footer>
+        </section>
     </div>
 
-    <!-- JavaScript Files -->
-    <script src="js/vendor/d3.v7.min.js"></script>
-    <script src="js/circuit-renderer.js"></script>
-    <script src="js/fluid-calculator.js"></script>
-    <script src="js/safety-validator.js"></script>
-    <script src="js/language-service.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        // Main Application Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('click', function() {
+                document.body.setAttribute('data-theme', 
+                    document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            });
+
+            // Modality Selection
+            const modalityBtns = document.querySelectorAll('.modality-btn');
+            modalityBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    modalityBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateCircuitVisualization(this.dataset.modality);
+                });
+            });
+
+            // Anticoagulation Method Change
+            const anticoagMethod = document.getElementById('anticoag-method');
+            anticoagMethod.addEventListener('change', function() {
+                document.getElementById('citrate-controls').style.display = 
+                    this.value === 'citrate' ? 'block' : 'none';
+                document.getElementById('heparin-controls').style.display = 
+                    this.value === 'heparin' ? 'block' : 'none';
+            });
+
+            // Real-time Calculations
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('change', updateCalculations);
+                input.addEventListener('input', updateCalculations);
+            });
+
+            function updateCircuitVisualization(modality) {
+                const svg = document.getElementById('circuit-svg');
+                // Show/hide paths based on modality
+                svg.querySelector('.dialysate-path').style.display = 
+                    (modality === 'CVVHD' || modality === 'CVVHDF') ? 'block' : 'none';
+                svg.querySelector('.replacement-path').style.display = 
+                    (modality === 'CVVH' || modality === 'CVVHDF') ? 'block' : 'none';
+            }
+
+            function updateCalculations() {
+                // Get all input values
+                const weight = parseFloat(document.getElementById('weight').value) || 70;
+                const age = parseInt(document.getElementById('age').value) || 50;
+                const bloodFlow = parseInt(document.getElementById('blood-flow').value) || 150;
+                const prefilterRate = parseInt(document.getElementById('prefilter-rate').value) || 0;
+                const dialysateRate = parseInt(document.getElementById('dialysate-rate').value) || 0;
+                const postfilterRate = parseInt(document.getElementById('postfilter-rate').value) || 0;
+                
+                // Calculate effluent dose based on modality
+                const activeModality = document.querySelector('.modality-btn.active').dataset.modality;
+                let effluentRate = 0;
+                
+                switch(activeModality) {
+                    case 'CVVH':
+                        effluentRate = prefilterRate + postfilterRate;
+                        break;
+                    case 'CVVHD':
+                        effluentRate = dialysateRate;
+                        break;
+                    case 'CVVHDF':
+                        effluentRate = prefilterRate * 0.8 + dialysateRate + postfilterRate * 0.5;
+                        break;
+                }
+                
+                const effluentDose = effluentRate / weight;
+                document.getElementById('effluent-dose').textContent = effluentDose.toFixed(1);
+                
+                // Update other calculations
+                document.getElementById('clearance').textContent = Math.round(effluentRate * 24 / 1000);
+                document.getElementById('uf-rate').textContent = Math.max(0, effluentRate - prefilterRate - dialysateRate);
+                
+                // Update blood flow display
+                document.getElementById('blood-flow-value').textContent = bloodFlow;
+                
+                // Update circuit pressures
+                document.getElementById('pre-filter-pressure').textContent = 
+                    Math.round(50 + bloodFlow * 0.8 + prefilterRate * 0.02);
+                document.getElementById('tmp-pressure').textContent = 
+                    Math.round(30 + bloodFlow * 0.5 + effluentRate * 0.01);
+                
+                // Validate settings
+                validateSettings();
+            }
+
+            function validateSettings() {
+                const alertsContainer = document.getElementById('alerts-container');
+                alertsContainer.innerHTML = '';
+                
+                const weight = parseFloat(document.getElementById('weight').value) || 70;
+                const effluentDose = parseFloat(document.getElementById('effluent-dose').textContent);
+                const postfilterRate = parseInt(document.getElementById('postfilter-rate').value) || 0;
+                const bloodFlow = parseInt(document.getElementById('blood-flow').value) || 150;
+                
+                // Check effluent dose
+                if(effluentDose < 20) {
+                    addAlert('warning', 'Effluent dose below recommended minimum (20 mL/kg/hr)');
+                } else if(effluentDose > 35) {
+                    addAlert('warning', 'Effluent dose above typical recommendations (35 mL/kg/hr)');
+                }
+                
+                // Check post-filter ratio
+                if(postfilterRate > 0 && postfilterRate > bloodFlow * 0.3) {
+                    addAlert('danger', 'Post-filter rate exceeds 30% of blood flow - high clotting risk');
+                }
+                
+                // Check anticoagulation
+                if(postfilterRate > 0 && document.getElementById('anticoag-method').value === 'none') {
+                    addAlert('danger', 'Post-filter administration requires anticoagulation');
+                }
+                
+                // Check age adjustments
+                const age = parseInt(document.getElementById('age').value) || 50;
+                if(age > 75 && document.getElementById('anticoag-method').value === 'heparin') {
+                    addAlert('info', 'Consider citrate anticoagulation for elderly patients');
+                }
+            }
+
+            function addAlert(type, message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${type}`;
+                alertDiv.innerHTML = `
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 
+                                      type === 'warning' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <div class="alert-message">${message}</div>
+                `;
+                document.getElementById('alerts-container').appendChild(alertDiv);
+            }
+
+            // Initialize
+            updateCircuitVisualization('CVVH');
+            updateCalculations();
+        });
+    </script>
 </body>
 </html>
