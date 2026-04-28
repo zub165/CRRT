@@ -1355,6 +1355,64 @@
                                     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" begin="2s" repeatCount="indefinite" />
                                 </circle>
                             </g>
+
+                            <!-- Solute symbols moving through circuit (NOT dots) -->
+                            <g class="solute-symbols" filter="url(#glow)">
+                                <!-- In blood (red context stays blood; symbols use neutral colors) -->
+                                <text font-size="12" font-weight="700" fill="#a78bfa">
+                                    <textPath href="#"></textPath>
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" repeatCount="indefinite" />
+                                    Na⁺
+                                </text>
+                                <text font-size="12" font-weight="700" fill="#22c55e">
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" begin="0.6s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" begin="0.6s" repeatCount="indefinite" />
+                                    K⁺
+                                </text>
+                                <text font-size="12" font-weight="700" fill="#14b8a6">
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" begin="1.2s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" begin="1.2s" repeatCount="indefinite" />
+                                    Cl⁻
+                                </text>
+                                <text font-size="12" font-weight="700" fill="#cbd5e1">
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" begin="1.8s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" begin="1.8s" repeatCount="indefinite" />
+                                    HCO₃⁻
+                                </text>
+                                <text font-size="12" font-weight="700" fill="#f97316">
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" begin="2.4s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" begin="2.4s" repeatCount="indefinite" />
+                                    BUN
+                                </text>
+                                <text font-size="12" font-weight="700" fill="#9ca3af">
+                                    <animateMotion path="M50,200 C100,200 120,200 150,200 C180,200 180,200 200,200" dur="4s" begin="3s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="4s" begin="3s" repeatCount="indefinite" />
+                                    Cr
+                                </text>
+
+                                <!-- In effluent (urine/filtration stays YELLOW) -->
+                                <text font-size="12" font-weight="800" fill="#fbbf24">
+                                    <animateMotion path="M300,300 C300,320 300,340 300,360" dur="3.8s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.8s" repeatCount="indefinite" />
+                                    Na⁺
+                                </text>
+                                <text font-size="12" font-weight="800" fill="#fbbf24">
+                                    <animateMotion path="M300,300 C300,320 300,340 300,360" dur="3.8s" begin="0.9s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.8s" begin="0.9s" repeatCount="indefinite" />
+                                    K⁺
+                                </text>
+                                <text font-size="12" font-weight="800" fill="#fbbf24">
+                                    <animateMotion path="M300,300 C300,320 300,340 300,360" dur="3.8s" begin="1.8s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.8s" begin="1.8s" repeatCount="indefinite" />
+                                    BUN
+                                </text>
+                                <text font-size="12" font-weight="800" fill="#fbbf24">
+                                    <animateMotion path="M300,300 C300,320 300,340 300,360" dur="3.8s" begin="2.7s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3.8s" begin="2.7s" repeatCount="indefinite" />
+                                    Cr
+                                </text>
+                            </g>
                             
                             <!-- Return Blood Flow Animation -->
                             <g class="return-animation" filter="url(#glow)">
@@ -2253,6 +2311,13 @@ Generated by NephroGuide CRRT Decision Support`;
                 const ffNote = document.getElementById('dose-ff-note');
                 if (ffNote) ffNote.textContent = ffPct <= 20 ? 'Target ≤ 20%' : 'High: lower convective rate or increase Qb';
 
+                // Kt/V (CRRT-style approximation) and urea clearance
+                const effluentLhr = (effluentRateMlHr / 1000);
+                const ureaClearanceLhr = effluentLhr * 0.9; // small-solute ~effluent * SC
+                const V_urea_L = Math.max(20, 0.6 * weight);
+                const ktvPerDay = (ureaClearanceLhr * 24) / V_urea_L;
+                const ureaClearanceMlMin = (ureaClearanceLhr * 1000) / 60;
+
                 // Labs read (for dots/trends only)
                 const getLab = (includes) => {
                     const items = Array.from(document.querySelectorAll('.lab-item'));
@@ -2281,7 +2346,7 @@ Generated by NephroGuide CRRT Decision Support`;
                     });
                 }
                 if (window.__crrt_trends?.maybeAutoAddPoint) {
-                    window.__crrt_trends.maybeAutoAddPoint({ labs, ff, effluentRateMlHr });
+                    window.__crrt_trends.maybeAutoAddPoint({ labs, ff, effluentRateMlHr, ktvPerDay, ureaClearanceMlMin });
                 }
             }
 
@@ -2500,9 +2565,9 @@ Generated by NephroGuide CRRT Decision Support`;
 
             const ctxLabs = labsCanvas.getContext('2d');
             const ctxSol = solCanvas.getContext('2d');
-            const palette = { na: '#60a5fa', k: '#fb7185', cl: '#38bdf8', hco3: '#34d399', bun: '#a78bfa', cr: '#94a3b8' };
+            const palette = { bun: '#a78bfa', cr: '#94a3b8', ktv: '#22c55e', ucl: '#38bdf8' };
             const maxPoints = 60;
-            const series = { t: [], na: [], k: [], cl: [], hco3: [], bun: [], cr: [], ff: [], effluentLday: [] };
+            const series = { t: [], bun: [], cr: [], ff: [], effluentLday: [], ktv: [], ucl: [] };
 
             const commonOptions = {
                 responsive: true,
@@ -2520,12 +2585,14 @@ Generated by NephroGuide CRRT Decision Support`;
             const labsChart = new Chart(ctxLabs, {
                 type: 'line',
                 data: { labels: series.t, datasets: [
-                    { label: 'Na (mEq/L)', data: series.na, borderColor: palette.na, tension: 0.25, pointRadius: 0 },
-                    { label: 'K (mEq/L)', data: series.k, borderColor: palette.k, tension: 0.25, pointRadius: 0 },
-                    { label: 'Cl (mEq/L)', data: series.cl, borderColor: palette.cl, tension: 0.25, pointRadius: 0 },
-                    { label: 'HCO₃ (mEq/L)', data: series.hco3, borderColor: palette.hco3, tension: 0.25, pointRadius: 0 },
+                    { label: 'Kt/V (per day)', data: series.ktv, borderColor: palette.ktv, tension: 0.25, pointRadius: 0, yAxisID: 'y' },
+                    { label: 'Urea clearance (mL/min)', data: series.ucl, borderColor: palette.ucl, tension: 0.25, pointRadius: 0, yAxisID: 'y2' },
                 ] },
-                options: { ...commonOptions, plugins: { ...commonOptions.plugins, title: { display: true, text: 'Electrolytes (trend)' } } }
+                options: {
+                    ...commonOptions,
+                    scales: { ...commonOptions.scales, y: { position: 'left' }, y2: { position: 'right', grid: { drawOnChartArea: false }, ticks: { precision: 2 } } },
+                    plugins: { ...commonOptions.plugins, title: { display: true, text: 'Dose delivery (trend)' } }
+                }
             });
 
             const solChart = new Chart(ctxSol, {
@@ -2543,33 +2610,31 @@ Generated by NephroGuide CRRT Decision Support`;
                 }
             });
 
-            function pushPoint({ labs, ff, effluentRateMlHr }) {
+            function pushPoint({ labs, ff, effluentRateMlHr, ktvPerDay, ureaClearanceMlMin }) {
                 const now = new Date();
                 const label = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 series.t.push(label);
                 const safe = (v) => (Number.isFinite(v) ? v : null);
-                series.na.push(safe(labs.na));
-                series.k.push(safe(labs.k));
-                series.cl.push(safe(labs.cl));
-                series.hco3.push(safe(labs.hco3));
                 series.bun.push(safe(labs.bun));
                 series.cr.push(safe(labs.cr));
                 series.ff.push(Number.isFinite(ff) ? ff * 100 : null);
                 series.effluentLday.push(Number.isFinite(effluentRateMlHr) ? (effluentRateMlHr / 1000) * 24 : null);
+                series.ktv.push(safe(ktvPerDay));
+                series.ucl.push(safe(ureaClearanceMlMin));
 
                 if (series.t.length > maxPoints) for (const k of Object.keys(series)) series[k].shift();
                 labsChart.update('none'); solChart.update('none');
             }
 
             let lastAuto = 0;
-            function maybeAutoAddPoint({ labs, ff, effluentRateMlHr }) {
+            function maybeAutoAddPoint({ labs, ff, effluentRateMlHr, ktvPerDay, ureaClearanceMlMin }) {
                 const now = Date.now();
                 if (now - lastAuto < 3000) return;
                 lastAuto = now;
-                pushPoint({ labs, ff, effluentRateMlHr });
+                pushPoint({ labs, ff, effluentRateMlHr, ktvPerDay, ureaClearanceMlMin });
             }
 
-            let latest = { labs: { na: 138, k: 4.2, cl: 104, hco3: 22, bun: 58, cr: 2.5 }, ff: 0, effluentRateMlHr: 0 };
+            let latest = { labs: { bun: 58, cr: 2.5 }, ff: 0, effluentRateMlHr: 0, ktvPerDay: null, ureaClearanceMlMin: null };
             window.__crrt_trends = {
                 maybeAutoAddPoint(params) { latest = { ...latest, ...params }; maybeAutoAddPoint(params); },
                 getLatestParams() { return latest; },
