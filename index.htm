@@ -1080,15 +1080,15 @@
         <!-- Header Section -->
         <header class="app-header" style="grid-area: header;">
             <div class="header-content">
-                <h1><i class="fas fa-kidney"></i> NephroGuide CRRT</h1>
+                <h1><i class="fas fa-kidney"></i> <span data-i18n="app.title">NephroGuide CRRT</span></h1>
                 <div class="app-controls">
                     <button id="check-now-btn" class="btn-action btn-check-now">
-                        <i class="fas fa-play-circle"></i> Check Now
+                        <i class="fas fa-play-circle"></i> <span data-i18n="app.checkNow">Check Now</span>
                     </button>
                     <button id="theme-toggle">
                         <i class="fas fa-moon"></i>
                         <i class="fas fa-sun"></i>
-                        Theme
+                        <span data-i18n="app.theme">Theme</span>
                     </button>
                     <select id="language-select">
                         <option value="en">English</option>
@@ -1102,27 +1102,27 @@
         <!-- Patient Data Section -->
         <section class="patient-section" style="grid-area: patient;">
             <div class="card">
-                <h2><i class="fas fa-user-circle"></i> Patient Data</h2>
+                <h2><i class="fas fa-user-circle"></i> <span data-i18n="section.patient">Patient Data</span></h2>
                 <div class="input-group">
-                    <label for="weight">Weight (kg)</label>
+                    <label for="weight" data-i18n="field.weight">Weight (kg)</label>
                     <input type="number" id="weight" min="20" max="300" step="0.1" value="70">
                 </div>
                 <div class="input-group">
-                    <label for="height">Height (cm)</label>
+                    <label for="height" data-i18n="field.height">Height (cm)</label>
                     <input type="number" id="height" min="100" max="250" value="170">
                 </div>
                 <div class="input-group">
-                    <label for="age">Age</label>
+                    <label for="age" data-i18n="field.age">Age</label>
                     <input type="number" id="age" min="18" max="120" value="50">
                 </div>
                 <div class="input-group">
-                    <label for="apache">APACHE II Score <span class="tooltip-container"><i class="fas fa-info-circle info-icon"></i><span class="tooltip">Acute Physiology and Chronic Health Evaluation II - A severity of disease classification system</span></span></label>
+                    <label for="apache"><span data-i18n="field.apache">APACHE II Score</span> <span class="tooltip-container"><i class="fas fa-info-circle info-icon"></i><span class="tooltip" data-i18n="tooltip.apache">Acute Physiology and Chronic Health Evaluation II - A severity of disease classification system</span></span></label>
                     <input type="number" id="apache" min="0" max="71" value="15">
                 </div>
             </div>
 
             <div class="card">
-                <h2><i class="fas fa-flask"></i> Current Labs</h2>
+                <h2><i class="fas fa-flask"></i> <span data-i18n="section.labs">Current Labs</span></h2>
                 <div class="lab-grid">
                     <div class="lab-item">
                         <label>K⁺ (mEq/L)</label>
@@ -1164,7 +1164,7 @@
         <section class="circuit-section" style="grid-area: circuit;">
             <div class="card">
                 <div class="circuit-header">
-                    <h2><i class="fas fa-project-diagram"></i> CRRT Circuit</h2>
+                    <h2><i class="fas fa-project-diagram"></i> <span data-i18n="section.circuit">CRRT Circuit</span></h2>
                     <div class="modality-tabs">
                         <button class="modality-btn active" data-modality="CVVH">CVVH</button>
                         <button class="modality-btn" data-modality="CVVHD">CVVHD</button>
@@ -1582,7 +1582,7 @@
         <!-- Fluid Management Section -->
         <section class="fluid-section" style="grid-area: fluids;">
             <div class="card">
-                <h2><i class="fas fa-tint"></i> Fluid Management</h2>
+                <h2><i class="fas fa-tint"></i> <span data-i18n="section.fluids">Fluid Management</span></h2>
                 
                 <div class="fluid-control-group" id="prefilter-controls">
                     <h3><i class="fas fa-arrow-down"></i> Pre-filter Replacement</h3>
@@ -1669,7 +1669,7 @@
                 </div>
                 
                 <div class="fluid-summary">
-                    <h3><i class="fas fa-calculator"></i> CRRT Dose Summary</h3>
+                    <h3><i class="fas fa-calculator"></i> <span data-i18n="section.doseSummary">CRRT Dose Summary</span></h3>
                     <div class="dose-cards">
                         <div class="dose-card">
                             <div class="dose-label">Effluent Rate</div>
@@ -1698,9 +1698,9 @@
         <!-- Results Section -->
         <section class="results-section" style="grid-area: results;">
             <div class="results-tabs">
-                <button class="results-tab active" data-tab="recommendations">Recommendations</button>
-                <button class="results-tab" data-tab="monitoring">Monitoring Plan</button>
-                <button class="results-tab" data-tab="trends">Trends</button>
+                <button class="results-tab active" data-tab="recommendations"><span data-i18n="tab.recommendations">Recommendations</span></button>
+                <button class="results-tab" data-tab="monitoring"><span data-i18n="tab.monitoring">Monitoring Plan</span></button>
+                <button class="results-tab" data-tab="trends"><span data-i18n="tab.trends">Trends</span></button>
             </div>
             <div class="results-content" id="recommendations-content">
                 <div class="recommendation-card">
@@ -1760,9 +1760,9 @@
                     <button id="update-monitoring-plan" class="btn-action">
                         <i class="fas fa-sync-alt"></i> Update Plan
                     </button>
-                    <button id="export-monitoring-plan" class="btn-action">
-                        <i class="fas fa-file-export"></i> Export Monitoring Plan
-                    </button>
+                            <button id="export-monitoring-plan" class="btn-action">
+                                <i class="fas fa-file-export"></i> <span data-i18n="action.exportMonitoring">Export Monitoring Plan</span>
+                            </button>
                 </div>
             </div>
             <div class="results-content" id="trends-content" style="display: none;">
@@ -1791,6 +1791,91 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // i18n (page-wide)
+            const I18N = {
+                en: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Check Now",
+                    "app.theme": "Theme",
+                    "section.patient": "Patient Data",
+                    "section.labs": "Current Labs",
+                    "section.circuit": "CRRT Circuit",
+                    "section.fluids": "Fluid Management",
+                    "section.doseSummary": "CRRT Dose Summary",
+                    "tab.recommendations": "Recommendations",
+                    "tab.monitoring": "Monitoring Plan",
+                    "tab.trends": "Trends",
+                    "action.exportMonitoring": "Export Monitoring Plan",
+                    "field.weight": "Weight (kg)",
+                    "field.height": "Height (cm)",
+                    "field.age": "Age",
+                    "field.apache": "APACHE II Score",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II - A severity of disease classification system",
+                },
+                es: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Ver ahora",
+                    "app.theme": "Tema",
+                    "section.patient": "Datos del paciente",
+                    "section.labs": "Laboratorios actuales",
+                    "section.circuit": "Circuito de CRRT",
+                    "section.fluids": "Manejo de líquidos",
+                    "section.doseSummary": "Resumen de dosis CRRT",
+                    "tab.recommendations": "Recomendaciones",
+                    "tab.monitoring": "Plan de monitoreo",
+                    "tab.trends": "Tendencias",
+                    "action.exportMonitoring": "Exportar plan",
+                    "field.weight": "Peso (kg)",
+                    "field.height": "Altura (cm)",
+                    "field.age": "Edad",
+                    "field.apache": "Puntaje APACHE II",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II - sistema de clasificación de gravedad de la enfermedad",
+                },
+                fr: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Vérifier",
+                    "app.theme": "Thème",
+                    "section.patient": "Données du patient",
+                    "section.labs": "Bilans actuels",
+                    "section.circuit": "Circuit CRRT",
+                    "section.fluids": "Gestion des fluides",
+                    "section.doseSummary": "Résumé de la dose CRRT",
+                    "tab.recommendations": "Recommandations",
+                    "tab.monitoring": "Plan de surveillance",
+                    "tab.trends": "Tendances",
+                    "action.exportMonitoring": "Exporter le plan",
+                    "field.weight": "Poids (kg)",
+                    "field.height": "Taille (cm)",
+                    "field.age": "Âge",
+                    "field.apache": "Score APACHE II",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II - système de classification de la gravité de la maladie",
+                }
+            };
+
+            function applyI18n(lang) {
+                const dict = I18N[lang] || I18N.en;
+                document.querySelectorAll('[data-i18n]').forEach((el) => {
+                    const key = el.getAttribute('data-i18n');
+                    const val = dict[key];
+                    if (typeof val === 'string') el.textContent = val;
+                });
+            }
+
+            const languageSelect = document.getElementById('language-select');
+            const savedLang = localStorage.getItem('lang');
+            const initialLang = savedLang || (navigator.language || 'en').slice(0, 2);
+            if (languageSelect) {
+                const lang = (initialLang === 'es' || initialLang === 'fr') ? initialLang : 'en';
+                languageSelect.value = lang;
+                applyI18n(lang);
+                languageSelect.addEventListener('change', function() {
+                    localStorage.setItem('lang', this.value);
+                    applyI18n(this.value);
+                });
+            } else {
+                applyI18n('en');
+            }
+
             // Dark mode toggle
             const themeToggle = document.getElementById('theme-toggle');
             
