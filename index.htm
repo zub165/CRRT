@@ -1142,35 +1142,35 @@
                 <h2><i class="fas fa-flask"></i> <span data-i18n="section.labs">Current Labs</span></h2>
                 <div class="lab-grid">
                     <div class="lab-item">
-                        <label>K⁺ (mEq/L)</label>
+                        <label data-i18n="lab.k">K⁺ (mEq/L)</label>
                         <input type="number" class="lab-value" value="4.2" step="0.1">
                     </div>
                     <div class="lab-item">
-                        <label>HCO₃⁻ (mEq/L)</label>
+                        <label data-i18n="lab.hco3">HCO₃⁻ (mEq/L)</label>
                         <input type="number" class="lab-value" value="22" step="1">
                     </div>
                     <div class="lab-item">
-                        <label>Creatinine (mg/dL)</label>
+                        <label data-i18n="lab.creatinine">Creatinine (mg/dL)</label>
                         <input type="number" class="lab-value" value="2.5" step="0.1">
                     </div>
                     <div class="lab-item">
-                        <label>pH</label>
+                        <label data-i18n="lab.ph">pH</label>
                         <input type="number" class="lab-value" value="7.32" step="0.01">
                     </div>
                     <div class="lab-item">
-                        <label>Na⁺ (mEq/L)</label>
+                        <label data-i18n="lab.na">Na⁺ (mEq/L)</label>
                         <input type="number" class="lab-value" value="138" step="1">
                     </div>
                     <div class="lab-item">
-                        <label>Cl⁻ (mEq/L)</label>
+                        <label data-i18n="lab.cl">Cl⁻ (mEq/L)</label>
                         <input type="number" class="lab-value" value="104" step="1">
                     </div>
                     <div class="lab-item">
-                        <label>BUN (mg/dL)</label>
+                        <label data-i18n="lab.bun">BUN (mg/dL)</label>
                         <input type="number" class="lab-value" value="58" step="1">
                     </div>
                     <div class="lab-item">
-                        <label>Ca²⁺ (mg/dL)</label>
+                        <label data-i18n="lab.ca">Ca²⁺ (mg/dL)</label>
                         <input type="number" class="lab-value" value="8.7" step="0.1">
                     </div>
                 </div>
@@ -1183,11 +1183,11 @@
                 <div class="circuit-header">
                     <h2><i class="fas fa-project-diagram"></i> <span data-i18n="section.circuit">CRRT Circuit</span></h2>
                     <div class="modality-tabs">
-                        <button class="modality-btn active" data-modality="CVVH">CVVH</button>
-                        <button class="modality-btn" data-modality="CVVHD">CVVHD</button>
-                        <button class="modality-btn" data-modality="CVVHDF">CVVHDF</button>
-                        <button class="modality-btn" data-modality="SCUF">SCUF</button>
-                        <button class="modality-btn" data-modality="TPE">TPE</button>
+                        <button class="modality-btn active" data-modality="CVVH" data-i18n="modality.cvvh">CVVH</button>
+                        <button class="modality-btn" data-modality="CVVHD" data-i18n="modality.cvvhd">CVVHD</button>
+                        <button class="modality-btn" data-modality="CVVHDF" data-i18n="modality.cvvhdf">CVVHDF</button>
+                        <button class="modality-btn" data-modality="SCUF" data-i18n="modality.scuf">SCUF</button>
+                        <button class="modality-btn" data-modality="TPE" data-i18n="modality.tpe">TPE</button>
                     </div>
                 </div>
                 <div class="circuit-animation" id="circuit-animation">
@@ -1282,7 +1282,7 @@
                                 <line x1="230" y1="240" x2="370" y2="240" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2" />
                                 
                                 <!-- Filter Label -->
-                                <text x="300" y="320" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="bold">Hemofilter</text>
+                                <text x="300" y="320" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="bold" data-i18n="svg.hemofilter">Hemofilter</text>
                                 
                                 <!-- Filter connection ports -->
                                 <circle cx="200" cy="200" r="8" fill="#ef4444" />
@@ -1300,7 +1300,7 @@
                                     <rect x="-40" y="-20" width="80" height="80" rx="10" ry="10" 
                                         fill="url(#fluidPattern)" fill-opacity="0.2" />
                                     <rect x="-5" y="60" width="10" height="20" fill="#3b82f6" />
-                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold">Dialysate</text>
+                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.dialysate">Dialysate</text>
                                 </g>
                                 
                                 <!-- Dialysate flow paths -->
@@ -1322,7 +1322,7 @@
                                     <rect x="-30" y="-20" width="60" height="70" rx="8" ry="8" 
                                         fill="url(#fluidPattern)" fill-opacity="0.2" />
                                     <rect x="-5" y="50" width="10" height="15" fill="#60a5fa" />
-                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold">Pre-filter</text>
+                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.preFilter">Pre-filter</text>
                                 </g>
                                 
                                 <!-- Pre-replacement flow path -->
@@ -1340,7 +1340,7 @@
                                     <rect x="-30" y="-20" width="60" height="70" rx="8" ry="8" 
                                         fill="url(#fluidPattern)" fill-opacity="0.2" />
                                     <rect x="-5" y="50" width="10" height="15" fill="#60a5fa" />
-                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold">Post-filter</text>
+                                    <text x="0" y="-30" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.postFilter">Post-filter</text>
                                 </g>
                                 
                                 <!-- Post-replacement flow path -->
@@ -1359,7 +1359,7 @@
                                         fill="url(#filtrateGradient)" fill-opacity="0.5" />
                                     <path d="M-20,0 L20,0 L20,25 C20,27 18,29 16,29 L-16,29 C-18,29 -20,27 -20,25 Z" 
                                         fill="url(#fluidPattern)" fill-opacity="0.1" />
-                                    <text x="0" y="45" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold">Effluent</text>
+                                    <text x="0" y="45" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.effluent">Effluent</text>
                                 </g>
                                 
                                 <!-- Effluent flow path -->
@@ -1372,11 +1372,11 @@
                             <g class="access-labels">
                                 <g transform="translate(20, 200)">
                                     <circle cx="0" cy="0" r="10" fill="#ef4444" />
-                                    <text x="-15" y="-15" text-anchor="end" fill="var(--text)" font-size="14" font-weight="bold">Access</text>
+                                    <text x="-15" y="-15" text-anchor="end" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.access">Access</text>
                                 </g>
                                 <g transform="translate(610, 200)">
                                     <circle cx="0" cy="0" r="10" fill="#10b981" />
-                                    <text x="15" y="-15" text-anchor="start" fill="var(--text)" font-size="14" font-weight="bold">Return</text>
+                                    <text x="15" y="-15" text-anchor="start" fill="var(--text)" font-size="14" font-weight="bold" data-i18n="svg.return">Return</text>
                                 </g>
                             </g>
                             
@@ -1387,7 +1387,7 @@
                                 <circle cx="0" cy="0" r="20" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3">
                                     <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="3s" repeatCount="indefinite" />
                                 </circle>
-                                <text x="0" y="40" text-anchor="middle" fill="var(--text)" font-size="12">Blood Pump</text>
+                                <text x="0" y="40" text-anchor="middle" fill="var(--text)" font-size="12" data-i18n="svg.bloodPump">Blood Pump</text>
                             </g>
                             
                             <!-- Animated Flow Elements -->
@@ -1531,29 +1531,29 @@
                 <!-- Waveform Visualization Section -->
                 <div class="waveform-visualization">
                     <div class="waveform-tabs">
-                        <button class="waveform-tab active" data-wave="pressure">Filter Pressure</button>
-                        <button class="waveform-tab" data-wave="flow">Blood Flow</button>
+                        <button class="waveform-tab active" data-wave="pressure" data-i18n="wave.tab.pressure">Filter Pressure</button>
+                        <button class="waveform-tab" data-wave="flow" data-i18n="wave.tab.flow">Blood Flow</button>
                     </div>
                     <div class="waveform-display">
                         <div class="waveform-metrics" aria-hidden="true">
                             <div class="metric-chip">
-                                <div class="metric-label">Blood flow</div>
+                                <div class="metric-label" data-i18n="wave.metric.bloodFlow">Blood flow</div>
                                 <div class="metric-value"><span id="wf-blood-flow">150</span> <span style="font-weight:600; opacity:0.8;">mL/min</span></div>
                             </div>
                             <div class="metric-chip">
-                                <div class="metric-label">Access</div>
+                                <div class="metric-label" data-i18n="wave.metric.access">Access</div>
                                 <div class="metric-value"><span id="wf-access">-50</span> <span style="font-weight:600; opacity:0.8;">mmHg</span></div>
                             </div>
                             <div class="metric-chip">
-                                <div class="metric-label">Pre-filter</div>
+                                <div class="metric-label" data-i18n="wave.metric.preFilter">Pre-filter</div>
                                 <div class="metric-value"><span id="wf-pre-filter">180</span> <span style="font-weight:600; opacity:0.8;">mmHg</span></div>
                             </div>
                             <div class="metric-chip">
-                                <div class="metric-label">Return</div>
+                                <div class="metric-label" data-i18n="wave.metric.return">Return</div>
                                 <div class="metric-value"><span id="wf-return">80</span> <span style="font-weight:600; opacity:0.8;">mmHg</span></div>
                             </div>
                             <div class="metric-chip">
-                                <div class="metric-label">TMP</div>
+                                <div class="metric-label" data-i18n="wave.metric.tmp">TMP</div>
                                 <div class="metric-value"><span id="wf-tmp">120</span> <span style="font-weight:600; opacity:0.8;">mmHg</span></div>
                             </div>
                         </div>
@@ -1562,13 +1562,13 @@
                 </div>
                 
                 <div class="mode-description" id="mode-description">
-                    <h3>Continuous Veno-Venous Hemofiltration (CVVH)</h3>
-                    <p>Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.</p>
+                    <h3 data-i18n="mode.title.cvvh">Continuous Veno-Venous Hemofiltration (CVVH)</h3>
+                    <p data-i18n="mode.desc.cvvh">Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.</p>
                 </div>
                 
                 <div class="circuit-controls">
                     <div class="control-group">
-                        <label for="blood-flow">Blood Flow (mL/min):</label>
+                        <label for="blood-flow" data-i18n="control.bloodFlow">Blood Flow (mL/min):</label>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <input type="range" id="blood-flow" min="50" max="300" value="150" style="flex: 1;">
                             <span id="blood-flow-value">150</span>
@@ -1576,19 +1576,19 @@
                     </div>
                     <div class="pressure-readings">
                         <div class="pressure">
-                            <span>Access</span>
+                            <span data-i18n="pressure.access">Access</span>
                             <span class="pressure-value" id="access-pressure">-50</span> mmHg
                         </div>
                         <div class="pressure">
-                            <span>Pre-filter</span>
+                            <span data-i18n="pressure.preFilter">Pre-filter</span>
                             <span class="pressure-value" id="pre-filter-pressure">180</span> mmHg
                         </div>
                         <div class="pressure">
-                            <span>Return</span>
+                            <span data-i18n="pressure.return">Return</span>
                             <span class="pressure-value" id="return-pressure">80</span> mmHg
                         </div>
                         <div class="pressure">
-                            <span>TMP</span>
+                            <span data-i18n="pressure.tmp">TMP</span>
                             <span class="pressure-value" id="tmp-pressure">120</span> mmHg
                         </div>
                     </div>
@@ -1602,35 +1602,35 @@
                 <h2><i class="fas fa-tint"></i> <span data-i18n="section.fluids">Fluid Management</span></h2>
                 
                 <div class="fluid-control-group" id="prefilter-controls">
-                    <h3><i class="fas fa-arrow-down"></i> Pre-filter Replacement</h3>
+                    <h3><i class="fas fa-arrow-down"></i> <span data-i18n="fluid.prefilter.title">Pre-filter Replacement</span></h3>
                     <div class="fluid-control">
-                        <label for="prefilter-rate">Rate (mL/hr)</label>
+                        <label for="prefilter-rate" data-i18n="fluid.rate">Rate (mL/hr)</label>
                         <input type="number" id="prefilter-rate" min="0" max="5000" step="50" value="1000">
                     </div>
                     <div class="fluid-control">
-                        <label for="prefilter-solution">Solution</label>
+                        <label for="prefilter-solution" data-i18n="fluid.solution">Solution</label>
                         <select id="prefilter-solution">
-                            <option value="bicarbonate">Bicarbonate (Na 140, HCO₃ 32)</option>
-                            <option value="citrate">Citrate (ACD-A)</option>
-                            <option value="custom">Custom Composition</option>
+                            <option value="bicarbonate" data-i18n="fluid.solution.bicarb">Bicarbonate (Na 140, HCO₃ 32)</option>
+                            <option value="citrate" data-i18n="fluid.solution.citrate">Citrate (ACD-A)</option>
+                            <option value="custom" data-i18n="fluid.solution.custom">Custom Composition</option>
                         </select>
                     </div>
                     <div class="fluid-custom" id="prefilter-custom" style="display: none;">
                         <div class="custom-electrolytes">
                             <div class="electrolyte-input">
-                                <label>Na⁺ (mEq/L)</label>
+                                <label data-i18n="lab.na">Na⁺ (mEq/L)</label>
                                 <input type="number" id="pre-na" value="140" min="130" max="150">
                             </div>
                             <div class="electrolyte-input">
-                                <label>K⁺ (mEq/L)</label>
+                                <label data-i18n="lab.k">K⁺ (mEq/L)</label>
                                 <input type="number" id="pre-k" value="4" min="0" max="8">
                             </div>
                             <div class="electrolyte-input">
-                                <label>HCO₃⁻ (mEq/L)</label>
+                                <label data-i18n="lab.hco3">HCO₃⁻ (mEq/L)</label>
                                 <input type="number" id="pre-hco3" value="32" min="0" max="40">
                             </div>
                             <div class="electrolyte-input">
-                                <label>Ca²⁺ (mEq/L)</label>
+                                <label data-i18n="fluid.caEq">Ca²⁺ (mEq/L)</label>
                                 <input type="number" id="pre-ca" value="3" min="0" max="5">
                             </div>
                         </div>
@@ -1638,49 +1638,49 @@
                 </div>
                 
                 <div class="fluid-control-group" id="postfilter-controls">
-                    <h3><i class="fas fa-arrow-up"></i> Post-filter Replacement</h3>
+                    <h3><i class="fas fa-arrow-up"></i> <span data-i18n="fluid.postfilter.title">Post-filter Replacement</span></h3>
                     <div class="fluid-control">
-                        <label for="postfilter-rate">Rate (mL/hr)</label>
+                        <label for="postfilter-rate" data-i18n="fluid.rate">Rate (mL/hr)</label>
                         <input type="number" id="postfilter-rate" min="0" max="5000" step="50" value="1000">
                     </div>
                     <div class="fluid-control">
-                        <label for="postfilter-solution">Solution</label>
+                        <label for="postfilter-solution" data-i18n="fluid.solution">Solution</label>
                         <select id="postfilter-solution">
-                            <option value="bicarbonate">Bicarbonate (Na 140, HCO₃ 32)</option>
-                            <option value="phosphate">Phosphate-containing (P 1.2)</option>
-                            <option value="custom">Custom Composition</option>
+                            <option value="bicarbonate" data-i18n="fluid.solution.bicarb">Bicarbonate (Na 140, HCO₃ 32)</option>
+                            <option value="phosphate" data-i18n="fluid.solution.phos">Phosphate-containing (P 1.2)</option>
+                            <option value="custom" data-i18n="fluid.solution.custom">Custom Composition</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="fluid-control-group" id="dialysate-controls" style="display: none;">
-                    <h3><i class="fas fa-exchange-alt"></i> Dialysate</h3>
+                    <h3><i class="fas fa-exchange-alt"></i> <span data-i18n="fluid.dialysate.title">Dialysate</span></h3>
                     <div class="fluid-control">
-                        <label for="dialysate-rate">Rate (mL/hr)</label>
+                        <label for="dialysate-rate" data-i18n="fluid.rate">Rate (mL/hr)</label>
                         <input type="number" id="dialysate-rate" min="0" max="5000" step="50" value="1000">
                     </div>
                     <div class="fluid-control">
-                        <label for="dialysate-solution">Solution</label>
+                        <label for="dialysate-solution" data-i18n="fluid.solution">Solution</label>
                         <select id="dialysate-solution">
-                            <option value="standard">Standard (Na 140, K 4)</option>
-                            <option value="low-k">Low K (Na 140, K 0)</option>
-                            <option value="custom">Custom Composition</option>
+                            <option value="standard" data-i18n="fluid.solution.standard">Standard (Na 140, K 4)</option>
+                            <option value="low-k" data-i18n="fluid.solution.lowK">Low K (Na 140, K 0)</option>
+                            <option value="custom" data-i18n="fluid.solution.custom">Custom Composition</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="fluid-control-group">
-                    <h3><i class="fas fa-minus-circle"></i> Fluid Removal</h3>
+                    <h3><i class="fas fa-minus-circle"></i> <span data-i18n="fluid.removal.title">Fluid Removal</span></h3>
                     <div class="fluid-control">
-                        <label for="fluid-removal-rate">Net Fluid Removal (mL/hr)</label>
+                        <label for="fluid-removal-rate" data-i18n="fluid.removal.net">Net Fluid Removal (mL/hr)</label>
                         <input type="number" id="fluid-removal-rate" min="0" max="1000" step="10" value="100">
                     </div>
                     <div class="fluid-control">
-                        <label for="patient-fluid-status">Patient Fluid Status</label>
+                        <label for="patient-fluid-status" data-i18n="fluid.status">Patient Fluid Status</label>
                         <select id="patient-fluid-status">
-                            <option value="overloaded">Volume Overloaded</option>
-                            <option value="euvolemic">Euvolemic</option>
-                            <option value="hypovolemic">Hypovolemic</option>
+                            <option value="overloaded" data-i18n="fluid.status.overloaded">Volume Overloaded</option>
+                            <option value="euvolemic" data-i18n="fluid.status.euvolemic">Euvolemic</option>
+                            <option value="hypovolemic" data-i18n="fluid.status.hypovolemic">Hypovolemic</option>
                         </select>
                     </div>
                 </div>
@@ -1689,23 +1689,23 @@
                     <h3><i class="fas fa-calculator"></i> <span data-i18n="section.doseSummary">CRRT Dose Summary</span></h3>
                     <div class="dose-cards">
                         <div class="dose-card">
-                            <div class="dose-label">Effluent Rate</div>
+                            <div class="dose-label" data-i18n="dose.effluentRate">Effluent Rate</div>
                             <div class="dose-value"><span id="dose-effluent-mlhr">2100</span> <span class="dose-unit">mL/hr</span></div>
                             <div class="dose-info"><span id="dose-effluent-mlkghr">21.0</span> mL/kg/hr</div>
                         </div>
                         <div class="dose-card">
-                            <div class="dose-label">Total Input</div>
+                            <div class="dose-label" data-i18n="dose.totalInput">Total Input</div>
                             <div class="dose-value"><span id="dose-input-mlhr">2000</span> <span class="dose-unit">mL/hr</span></div>
                         </div>
                         <div class="dose-card">
-                            <div class="dose-label">Net Balance</div>
+                            <div class="dose-label" data-i18n="dose.netBalance">Net Balance</div>
                             <div class="dose-value negative"><span id="dose-net-mlhr">-100</span> <span class="dose-unit">mL/hr</span></div>
                             <div class="dose-info"><span id="dose-net-mlday">-2400</span> mL/day</div>
                         </div>
                         <div class="dose-card">
-                            <div class="dose-label">Filtration Fraction</div>
+                            <div class="dose-label" data-i18n="dose.filtrationFraction">Filtration Fraction</div>
                             <div class="dose-value"><span id="dose-ff-pct">—</span><span class="dose-unit">%</span></div>
-                            <div class="dose-info" id="dose-ff-note">Target ≤ 20%</div>
+                            <div class="dose-info" id="dose-ff-note" data-i18n="dose.ffTarget">Target ≤ 20%</div>
                         </div>
                     </div>
                 </div>
@@ -1721,19 +1721,19 @@
             </div>
             <div class="results-content" id="recommendations-content">
                 <div class="recommendation-card">
-                    <div class="recommendation-title"><i class="fas fa-check-circle"></i> Modality Recommendation</div>
-                    <div class="recommendation-body">CVVH is appropriate given the patient's hemodynamic status and solute clearance needs.</div>
-                    <div class="recommendation-reason">Reason: Stable solute clearance with minimized protein loss.</div>
+                    <div class="recommendation-title"><i class="fas fa-check-circle"></i> <span data-i18n="rec.modality.title">Modality Recommendation</span></div>
+                    <div class="recommendation-body" data-i18n="rec.modality.body">CVVH is appropriate given the patient's hemodynamic status and solute clearance needs.</div>
+                    <div class="recommendation-reason" data-i18n="rec.modality.reason">Reason: Stable solute clearance with minimized protein loss.</div>
                 </div>
                 <div class="recommendation-card">
-                    <div class="recommendation-title"><i class="fas fa-check-circle"></i> Fluid Balance</div>
-                    <div class="recommendation-body">Current net fluid removal rate of 100 mL/hr is appropriate based on patient's fluid status.</div>
-                    <div class="recommendation-reason">Reason: Patient shows signs of moderate volume overload.</div>
+                    <div class="recommendation-title"><i class="fas fa-check-circle"></i> <span data-i18n="rec.fluid.title">Fluid Balance</span></div>
+                    <div class="recommendation-body" data-i18n="rec.fluid.body">Current net fluid removal rate of 100 mL/hr is appropriate based on patient's fluid status.</div>
+                    <div class="recommendation-reason" data-i18n="rec.fluid.reason">Reason: Patient shows signs of moderate volume overload.</div>
                 </div>
                 <div class="recommendation-card">
-                    <div class="recommendation-title"><i class="fas fa-exclamation-triangle"></i> Anticoagulation Alert</div>
-                    <div class="recommendation-body">Consider regional citrate anticoagulation if filter lifespan is less than 24 hours.</div>
-                    <div class="recommendation-reason">Reason: Optimize filter life without increasing systemic bleeding risk.</div>
+                    <div class="recommendation-title"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="rec.anticoag.title">Anticoagulation Alert</span></div>
+                    <div class="recommendation-body" data-i18n="rec.anticoag.body">Consider regional citrate anticoagulation if filter lifespan is less than 24 hours.</div>
+                    <div class="recommendation-reason" data-i18n="rec.anticoag.reason">Reason: Optimize filter life without increasing systemic bleeding risk.</div>
                 </div>
             </div>
             <div class="results-content" id="monitoring-content" style="display: none;">
@@ -1775,7 +1775,7 @@
                 
                 <div style="display: flex; justify-content: center; margin-top: 20px; gap: 16px;">
                     <button id="update-monitoring-plan" class="btn-action">
-                        <i class="fas fa-sync-alt"></i> Update Plan
+                        <i class="fas fa-sync-alt"></i> <span data-i18n="action.updatePlan">Update Plan</span>
                     </button>
                             <button id="export-monitoring-plan" class="btn-action">
                                 <i class="fas fa-file-export"></i> <span data-i18n="action.exportMonitoring">Export Monitoring Plan</span>
@@ -1784,20 +1784,20 @@
             </div>
             <div class="results-content" id="trends-content" style="display: none;">
                 <div class="recommendation-card">
-                    <div class="recommendation-title"><i class="fas fa-chart-area"></i> Dose & solute trends</div>
+                    <div class="recommendation-title"><i class="fas fa-chart-area"></i> <span data-i18n="trends.title">Dose & solute trends</span></div>
                     <div class="recommendation-body">
                         <div class="waveform-display" style="height: 240px;">
-                            <canvas id="labs-trend-canvas" width="800" height="220" aria-label="Dose delivery trend graph"></canvas>
+                            <canvas id="labs-trend-canvas" width="800" height="220" aria-label="Dose delivery trend graph" data-i18n-aria="trends.aria.dose"></canvas>
                         </div>
                         <div class="waveform-display" style="height: 240px; margin-top: 14px;">
-                            <canvas id="solutes-trend-canvas" width="800" height="220" aria-label="Solute trend graph"></canvas>
+                            <canvas id="solutes-trend-canvas" width="800" height="220" aria-label="Solute trend graph" data-i18n-aria="trends.aria.solute"></canvas>
                         </div>
                         <div class="animation-controls" style="margin-top: 12px;">
                             <button class="btn-action" id="trend-snapshot">
-                                <i class="fas fa-camera"></i> Snapshot point
+                                <i class="fas fa-camera"></i> <span data-i18n="action.snapshot">Snapshot point</span>
                             </button>
                             <button class="btn-action" id="trend-reset" style="background-color: var(--warning);">
-                                <i class="fas fa-trash"></i> Reset trends
+                                <i class="fas fa-trash"></i> <span data-i18n="action.resetTrends">Reset trends</span>
                             </button>
                         </div>
                     </div>
@@ -1812,6 +1812,7 @@
             const I18N = {
                 en: {
                     "app.title": "NephroGuide CRRT",
+                    "app.pageTitle": "NephroGuide CRRT Decision Support",
                     "app.checkNow": "Check Now",
                     "app.theme": "Theme",
                     "section.patient": "Patient Data",
@@ -1823,11 +1824,96 @@
                     "tab.monitoring": "Monitoring Plan",
                     "tab.trends": "Trends",
                     "action.exportMonitoring": "Export Monitoring Plan",
+                    "action.updatePlan": "Update Plan",
+                    "action.updating": "Updating...",
+                    "action.processing": "Processing...",
+                    "action.snapshot": "Snapshot point",
+                    "action.resetTrends": "Reset trends",
                     "field.weight": "Weight (kg)",
                     "field.height": "Height (cm)",
                     "field.age": "Age",
                     "field.apache": "APACHE II Score",
                     "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II - A severity of disease classification system",
+                    "lab.na": "Na⁺ (mEq/L)",
+                    "lab.k": "K⁺ (mEq/L)",
+                    "lab.cl": "Cl⁻ (mEq/L)",
+                    "lab.hco3": "HCO₃⁻ (mEq/L)",
+                    "lab.bun": "BUN (mg/dL)",
+                    "lab.creatinine": "Creatinine (mg/dL)",
+                    "lab.ca": "Ca²⁺ (mg/dL)",
+                    "lab.ph": "pH",
+                    "modality.cvvh": "CVVH",
+                    "modality.cvvhd": "CVVHD",
+                    "modality.cvvhdf": "CVVHDF",
+                    "modality.scuf": "SCUF",
+                    "modality.tpe": "TPE",
+                    "svg.hemofilter": "Hemofilter",
+                    "svg.dialysate": "Dialysate",
+                    "svg.preFilter": "Pre-filter",
+                    "svg.postFilter": "Post-filter",
+                    "svg.effluent": "Effluent",
+                    "svg.access": "Access",
+                    "svg.return": "Return",
+                    "svg.bloodPump": "Blood Pump",
+                    "wave.tab.pressure": "Filter Pressure",
+                    "wave.tab.flow": "Blood Flow",
+                    "wave.metric.bloodFlow": "Blood flow",
+                    "wave.metric.access": "Access",
+                    "wave.metric.preFilter": "Pre-filter",
+                    "wave.metric.return": "Return",
+                    "wave.metric.tmp": "TMP",
+                    "mode.title.cvvh": "Continuous Veno-Venous Hemofiltration (CVVH)",
+                    "mode.desc.cvvh": "Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.",
+                    "mode.title.cvvhd": "Continuous Veno-Venous Hemodialysis (CVVHD)",
+                    "mode.desc.cvvhd": "Removes solutes primarily by diffusion using dialysate. Effective for small molecule clearance.",
+                    "mode.title.cvvhdf": "Continuous Veno-Venous Hemodiafiltration (CVVHDF)",
+                    "mode.desc.cvvhdf": "Combines diffusion and convection using both dialysate and replacement fluids for optimal clearance of small and middle molecules.",
+                    "mode.title.scuf": "Slow Continuous Ultrafiltration (SCUF)",
+                    "mode.desc.scuf": "Primarily for fluid removal with minimal solute clearance. Used for volume overload with adequate renal function.",
+                    "mode.title.tpe": "Therapeutic Plasma Exchange (TPE)",
+                    "mode.desc.tpe": "Removes plasma and replaces with albumin or FFP. Used for autoimmune conditions and specific toxin removal.",
+                    "control.bloodFlow": "Blood Flow (mL/min):",
+                    "pressure.access": "Access",
+                    "pressure.preFilter": "Pre-filter",
+                    "pressure.return": "Return",
+                    "pressure.tmp": "TMP",
+                    "fluid.prefilter.title": "Pre-filter Replacement",
+                    "fluid.postfilter.title": "Post-filter Replacement",
+                    "fluid.dialysate.title": "Dialysate",
+                    "fluid.removal.title": "Fluid Removal",
+                    "fluid.rate": "Rate (mL/hr)",
+                    "fluid.solution": "Solution",
+                    "fluid.solution.bicarb": "Bicarbonate (Na 140, HCO₃ 32)",
+                    "fluid.solution.citrate": "Citrate (ACD-A)",
+                    "fluid.solution.phos": "Phosphate-containing (P 1.2)",
+                    "fluid.solution.standard": "Standard (Na 140, K 4)",
+                    "fluid.solution.lowK": "Low K (Na 140, K 0)",
+                    "fluid.solution.custom": "Custom Composition",
+                    "fluid.removal.net": "Net Fluid Removal (mL/hr)",
+                    "fluid.status": "Patient Fluid Status",
+                    "fluid.status.overloaded": "Volume Overloaded",
+                    "fluid.status.euvolemic": "Euvolemic",
+                    "fluid.status.hypovolemic": "Hypovolemic",
+                    "fluid.caEq": "Ca²⁺ (mEq/L)",
+                    "dose.effluentRate": "Effluent Rate",
+                    "dose.totalInput": "Total Input",
+                    "dose.netBalance": "Net Balance",
+                    "dose.filtrationFraction": "Filtration Fraction",
+                    "dose.ffTarget": "Target ≤ 20%",
+                    "rec.modality.title": "Modality Recommendation",
+                    "rec.modality.body": "CVVH is appropriate given the patient's hemodynamic status and solute clearance needs.",
+                    "rec.modality.reason": "Reason: Stable solute clearance with minimized protein loss.",
+                    "rec.fluid.title": "Fluid Balance",
+                    "rec.fluid.body": "Current net fluid removal rate of 100 mL/hr is appropriate based on patient's fluid status.",
+                    "rec.fluid.reason": "Reason: Patient shows signs of moderate volume overload.",
+                    "rec.anticoag.title": "Anticoagulation Alert",
+                    "rec.anticoag.body": "Consider regional citrate anticoagulation if filter lifespan is less than 24 hours.",
+                    "rec.anticoag.reason": "Reason: Optimize filter life without increasing systemic bleeding risk.",
+                    "trends.title": "Dose & solute trends",
+                    "trends.aria.dose": "Dose delivery trend graph",
+                    "trends.aria.solute": "Solute trend graph",
+                    "notif.monitoringUpdated": "Monitoring plan updated based on current patient parameters!",
+                    "notif.crrtChecked": "CRRT parameters checked and updated!",
                 },
                 es: {
                     "app.title": "NephroGuide CRRT",
@@ -2194,14 +2280,40 @@
                 }
             };
 
+            const getLang = () => (languageSelect?.value || localStorage.getItem('lang') || 'en');
+            const i18nT = (key, lang = getLang()) => {
+                const en = I18N.en || {};
+                const dict = I18N[lang] || en;
+                return (dict[key] ?? en[key]);
+            };
+
             function applyI18n(lang) {
-                const dict = I18N[lang] || I18N.en;
+                const en = I18N.en || {};
+                const dict = I18N[lang] || en;
+                const t = (key) => (dict[key] ?? en[key]);
                 const rtlLangs = new Set(['ar', 'ur', 'fa', 'he']);
                 document.documentElement.setAttribute('dir', rtlLangs.has(lang) ? 'rtl' : 'ltr');
+                const pageTitle = t('app.pageTitle');
+                if (typeof pageTitle === 'string') document.title = pageTitle;
                 document.querySelectorAll('[data-i18n]').forEach((el) => {
                     const key = el.getAttribute('data-i18n');
-                    const val = dict[key];
+                    const val = t(key);
                     if (typeof val === 'string') el.textContent = val;
+                });
+                document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+                    const key = el.getAttribute('data-i18n-title');
+                    const val = t(key);
+                    if (typeof val === 'string') el.setAttribute('title', val);
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+                    const key = el.getAttribute('data-i18n-placeholder');
+                    const val = t(key);
+                    if (typeof val === 'string') el.setAttribute('placeholder', val);
+                });
+                document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+                    const key = el.getAttribute('data-i18n-aria');
+                    const val = t(key);
+                    if (typeof val === 'string') el.setAttribute('aria-label', val);
                 });
             }
 
@@ -2237,16 +2349,18 @@
             if (updateMonitoringBtn) {
                 updateMonitoringBtn.addEventListener('click', function() {
                     this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                    const updating = i18nT('action.updating') || 'Updating...';
+                    this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${updating}`;
                     
                     // Simulate recalculation based on current patient data
                     setTimeout(() => {
                         // Re-enable button
                         this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Plan';
+                        const updatePlan = i18nT('action.updatePlan') || 'Update Plan';
+                        this.innerHTML = `<i class="fas fa-sync-alt"></i> ${updatePlan}`;
                         
                         // Show notification
-                        showNotification('Monitoring plan updated based on current patient parameters!', 'success');
+                        showNotification(i18nT('notif.monitoringUpdated') || 'Monitoring plan updated based on current patient parameters!', 'success');
                     }, 1200);
                 });
             }
@@ -2323,6 +2437,8 @@ Generated by NephroGuide CRRT Decision Support`;
             
             prefilterSolution.addEventListener('change', function() {
                 prefilterCustom.style.display = this.value === 'custom' ? 'block' : 'none';
+                // Composition display changes can affect downstream calculations/exports.
+                if (typeof updateCalculations === 'function') updateCalculations();
             });
             
             // Modality buttons
@@ -2413,6 +2529,9 @@ Generated by NephroGuide CRRT Decision Support`;
                     
                     // Update modality description
                     updateModalityDescription(modality);
+
+                    // Recalculate dose/FF/clearance/trends when modality changes.
+                    if (typeof updateCalculations === 'function') updateCalculations();
                 });
             });
             
@@ -2479,6 +2598,9 @@ Generated by NephroGuide CRRT Decision Support`;
                 }
 
                 syncWaveformMetrics();
+
+                // Blood flow impacts FF, clearance, and trend points.
+                if (typeof updateCalculations === 'function') updateCalculations();
             });
             
             // Add tooltips to circuit elements
@@ -2570,35 +2692,39 @@ Generated by NephroGuide CRRT Decision Support`;
             // Function to update modality description
             function updateModalityDescription(modality) {
                 const descriptionContainer = document.getElementById('mode-description');
-                let title, description;
+                let titleKey = 'mode.title.cvvh';
+                let descKey = 'mode.desc.cvvh';
                 
                 switch (modality) {
                     case 'CVVH':
-                        title = 'Continuous Veno-Venous Hemofiltration (CVVH)';
-                        description = 'Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.';
+                        titleKey = 'mode.title.cvvh';
+                        descKey = 'mode.desc.cvvh';
                         break;
                     case 'CVVHD':
-                        title = 'Continuous Veno-Venous Hemodialysis (CVVHD)';
-                        description = 'Removes solutes primarily by diffusion using dialysate. Effective for small molecule clearance.';
+                        titleKey = 'mode.title.cvvhd';
+                        descKey = 'mode.desc.cvvhd';
                         break;
                     case 'CVVHDF':
-                        title = 'Continuous Veno-Venous Hemodiafiltration (CVVHDF)';
-                        description = 'Combines diffusion and convection using both dialysate and replacement fluids for optimal clearance of small and middle molecules.';
+                        titleKey = 'mode.title.cvvhdf';
+                        descKey = 'mode.desc.cvvhdf';
                         break;
                     case 'SCUF':
-                        title = 'Slow Continuous Ultrafiltration (SCUF)';
-                        description = 'Primarily for fluid removal with minimal solute clearance. Used for volume overload with adequate renal function.';
+                        titleKey = 'mode.title.scuf';
+                        descKey = 'mode.desc.scuf';
                         break;
                     case 'TPE':
-                        title = 'Therapeutic Plasma Exchange (TPE)';
-                        description = 'Removes plasma and replaces with albumin or FFP. Used for autoimmune conditions and specific toxin removal.';
+                        titleKey = 'mode.title.tpe';
+                        descKey = 'mode.desc.tpe';
                         break;
                     default:
-                        title = 'Continuous Veno-Venous Hemofiltration (CVVH)';
-                        description = 'Removes fluid and solutes by convection using replacement fluid. Pre-dilution and/or post-dilution fluid replacement can be used.';
+                        titleKey = 'mode.title.cvvh';
+                        descKey = 'mode.desc.cvvh';
                 }
                 
-                descriptionContainer.innerHTML = `<h3>${title}</h3><p>${description}</p>`;
+                const title = i18nT(titleKey) || '';
+                const desc = i18nT(descKey) || '';
+                descriptionContainer.innerHTML = `<h3 data-i18n="${titleKey}">${title}</h3><p data-i18n="${descKey}">${desc}</p>`;
+                applyI18n(getLang());
             }
             
             // Initialize default modality
@@ -2610,15 +2736,19 @@ Generated by NephroGuide CRRT Decision Support`;
             // Check Now button animation
             const checkNowBtn = document.getElementById('check-now-btn');
             checkNowBtn.addEventListener('click', function() {
+                // Actually run the calculator so UI updates reflect latest inputs.
+                try { updateCalculations(); } catch (_) {}
                 this.disabled = true;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                const processing = i18nT('action.processing') || 'Processing...';
+                this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${processing}`;
                 
                 setTimeout(() => {
                     this.disabled = false;
-                    this.innerHTML = '<i class="fas fa-play-circle"></i> Check Now';
+                    const checkNow = i18nT('app.checkNow') || 'Check Now';
+                    this.innerHTML = `<i class="fas fa-play-circle"></i> ${checkNow}`;
                     
                     // Show a success toast or notification
-                    showNotification('CRRT parameters checked and updated!', 'success');
+                    showNotification(i18nT('notif.crrtChecked') || 'CRRT parameters checked and updated!', 'success');
                 }, 1500);
             });
             
@@ -2843,6 +2973,26 @@ Generated by NephroGuide CRRT Decision Support`;
             updateCalculations();
             initClearanceAnimation();
             initTrendCharts();
+
+            // Auto-recalc when dose inputs/labs change (so you don't need to press "Check Now").
+            const recalcInputIds = [
+                'weight',
+                'prefilter-rate',
+                'postfilter-rate',
+                'dialysate-rate',
+                'fluid-removal-rate',
+                'patient-fluid-status',
+            ];
+            recalcInputIds.forEach((id) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const evt = (el.tagName === 'SELECT') ? 'change' : 'input';
+                el.addEventListener(evt, () => updateCalculations());
+            });
+            document.querySelectorAll('.lab-value').forEach((input) => {
+                input.addEventListener('input', () => updateCalculations());
+            });
+
         });
         
         // Waveform Animation Functions
