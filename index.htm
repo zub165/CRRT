@@ -1094,6 +1094,11 @@
                         <option value="en">English</option>
                         <option value="es">Español</option>
                         <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt">Português</option>
+                        <option value="ar">العربية</option>
+                        <option value="ur">اردو</option>
                     </select>
                 </div>
             </div>
@@ -1850,6 +1855,102 @@
                     "field.apache": "Score APACHE II",
                     "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II - système de classification de la gravité de la maladie",
                 }
+                ,
+                de: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Prüfen",
+                    "app.theme": "Thema",
+                    "section.patient": "Patientendaten",
+                    "section.labs": "Aktuelle Laborwerte",
+                    "section.circuit": "CRRT‑Kreislauf",
+                    "section.fluids": "Flüssigkeitsmanagement",
+                    "section.doseSummary": "CRRT‑Dosisübersicht",
+                    "tab.recommendations": "Empfehlungen",
+                    "tab.monitoring": "Überwachungsplan",
+                    "tab.trends": "Trends",
+                    "action.exportMonitoring": "Plan exportieren",
+                    "field.weight": "Gewicht (kg)",
+                    "field.height": "Größe (cm)",
+                    "field.age": "Alter",
+                    "field.apache": "APACHE‑II‑Score",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II – ein System zur Einstufung der Krankheits­schwere",
+                },
+                it: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Verifica",
+                    "app.theme": "Tema",
+                    "section.patient": "Dati del paziente",
+                    "section.labs": "Esami attuali",
+                    "section.circuit": "Circuito CRRT",
+                    "section.fluids": "Gestione dei fluidi",
+                    "section.doseSummary": "Riepilogo dose CRRT",
+                    "tab.recommendations": "Raccomandazioni",
+                    "tab.monitoring": "Piano di monitoraggio",
+                    "tab.trends": "Trend",
+                    "action.exportMonitoring": "Esporta piano",
+                    "field.weight": "Peso (kg)",
+                    "field.height": "Altezza (cm)",
+                    "field.age": "Età",
+                    "field.apache": "Punteggio APACHE II",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II – sistema di classificazione della gravità della malattia",
+                },
+                pt: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "Verificar",
+                    "app.theme": "Tema",
+                    "section.patient": "Dados do paciente",
+                    "section.labs": "Exames atuais",
+                    "section.circuit": "Circuito de CRRT",
+                    "section.fluids": "Gestão de fluidos",
+                    "section.doseSummary": "Resumo da dose de CRRT",
+                    "tab.recommendations": "Recomendações",
+                    "tab.monitoring": "Plano de monitorização",
+                    "tab.trends": "Tendências",
+                    "action.exportMonitoring": "Exportar plano",
+                    "field.weight": "Peso (kg)",
+                    "field.height": "Altura (cm)",
+                    "field.age": "Idade",
+                    "field.apache": "Pontuação APACHE II",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II – sistema de classificação da gravidade da doença",
+                },
+                ar: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "تحقّق الآن",
+                    "app.theme": "السمة",
+                    "section.patient": "بيانات المريض",
+                    "section.labs": "التحاليل الحالية",
+                    "section.circuit": "دائرة CRRT",
+                    "section.fluids": "إدارة السوائل",
+                    "section.doseSummary": "ملخّص جرعة CRRT",
+                    "tab.recommendations": "التوصيات",
+                    "tab.monitoring": "خطة المراقبة",
+                    "tab.trends": "الاتجاهات",
+                    "action.exportMonitoring": "تصدير الخطة",
+                    "field.weight": "الوزن (كغ)",
+                    "field.height": "الطول (سم)",
+                    "field.age": "العمر",
+                    "field.apache": "درجة APACHE II",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II — نظام لتصنيف شدة المرض",
+                },
+                ur: {
+                    "app.title": "NephroGuide CRRT",
+                    "app.checkNow": "ابھی چیک کریں",
+                    "app.theme": "تھیم",
+                    "section.patient": "مریض کا ڈیٹا",
+                    "section.labs": "موجودہ لیبز",
+                    "section.circuit": "CRRT سرکٹ",
+                    "section.fluids": "فلوئیڈ مینجمنٹ",
+                    "section.doseSummary": "CRRT ڈوز سمری",
+                    "tab.recommendations": "سفارشات",
+                    "tab.monitoring": "مانیٹرنگ پلان",
+                    "tab.trends": "ٹرینڈز",
+                    "action.exportMonitoring": "پلان ایکسپورٹ کریں",
+                    "field.weight": "وزن (کلوگرام)",
+                    "field.height": "قد (سینٹی میٹر)",
+                    "field.age": "عمر",
+                    "field.apache": "APACHE II اسکور",
+                    "tooltip.apache": "Acute Physiology and Chronic Health Evaluation II — بیماری کی شدت کی درجہ بندی کا نظام",
+                }
             };
 
             function applyI18n(lang) {
@@ -1865,7 +1966,8 @@
             const savedLang = localStorage.getItem('lang');
             const initialLang = savedLang || (navigator.language || 'en').slice(0, 2);
             if (languageSelect) {
-                const lang = (initialLang === 'es' || initialLang === 'fr') ? initialLang : 'en';
+                const supported = Object.keys(I18N);
+                const lang = supported.includes(initialLang) ? initialLang : 'en';
                 languageSelect.value = lang;
                 applyI18n(lang);
                 languageSelect.addEventListener('change', function() {
